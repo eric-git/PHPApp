@@ -1,0 +1,13 @@
+{
+    "editor.formatOnType": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "html.format.indentInnerHtml": true,
+    "html.format.templating": true,
+    "references.preferredLocation": "view",
+    "html.format.indentHandlebars": true,
+    "intelephense.completion.fullyQualifyGlobalConstantsAndFunctions": true,
+    "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
+    "php.debug.executablePath": "C:\\PHP\\PHP819\\php.exe",
+    "javascript.format.insertSpaceAfterConstructor": true
+}
