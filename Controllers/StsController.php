@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Usi\Controllers;
 
 require_once($_SERVER['DOCUMENT_ROOT'] . "\Controllers\BaseController.php");
@@ -23,16 +25,19 @@ class StsController extends BaseController
     {
         $stsSettings = $this->Configuration->Sts;
         $stsViewModel = new StsViewModel($stsSettings->IssuerUrl, $stsSettings->AppliesTo);
-        $request = $this->stsServiceClient->getSecurityTokenRequest();
-        $stsViewModel->RequestXml = parent::cleanXml($request);
-        //$response = $this->issue($request);
-        //$stsViewModel->ResponseXml = parent::cleanXml($response);
+        $data = $this->issue();
+        $stsViewModel->RequestXml = parent::cleanXml($data["Request"]);
+        $stsViewModel->ResponseXml = parent::cleanXml($data["Response"]);
         return $stsViewModel;
     }
 
-    public function issue(string $request): string
+    public function issue(): array
     {
+        $request = $this->stsServiceClient->getSecurityTokenRequest();
         $response = $this->stsServiceClient->issue($request);
-        return $response;
+        return [
+            "Request" => parent::cleanXml($request),
+            "Response" => parent::cleanXml($response)
+        ];
     }
 }

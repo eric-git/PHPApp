@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Usi\Infrastructure;
 
 require_once($_SERVER['DOCUMENT_ROOT'] . "\Infrastructure\KeyStoreManager.php");
@@ -8,7 +10,7 @@ use DateTime;
 use DateTimeZone;
 use SoapClient;
 
-class BaseServiceClient
+abstract class BaseServiceClient
 {
     protected readonly SoapClient $ServiceClient;
     protected readonly Configuration $Configuration;

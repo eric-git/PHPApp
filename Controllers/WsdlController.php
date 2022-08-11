@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Usi\Controllers;
 
 require_once($_SERVER['DOCUMENT_ROOT'] . "\Controllers\BaseController.php");

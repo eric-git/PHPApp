@@ -3,20 +3,22 @@ $(document).ready(function () {
 
     $("#btnSubmit").click(function (e) {
         e.preventDefault();
-        $("#txtResponse").html("").closest("details").removeAttr("open");
-        $("#txtRequest").prop("disabled", "disabled");
+        if ($(this).hasClass("disabled")) {
+            return;
+        }
+
         $(this).addClass("disabled");
-        var domParser = new DOMParser();
-        var xml = domParser.parseFromString($("#txtRequest").text(), "text/xml");
-        var serializer = new XMLSerializer();
         $.post("/Controllers/AjaxManager.php",
-            {
-                controller: "StsController",
-                function: "issue",
-                param_0: serializer.serializeToString(xml)
-            },
+            { "controller": "StsController", "function": "issue" },
             function (data) {
-                $("txtResponse").Html(data);
+                var response = JSON.parse(data);
+                $("#txtRequest").html($("<div/>").text(response.Request).html());
+                $("#txtResponse").html($("<div/>").text(response.Response).html());
+                hljs.highlightAll();
+                $("#txtRequest, #txtResponse").closest("pre").scrollTop(0);
+            })
+            .always(function () {
+                $("#btnSubmit").removeClass("disabled");
             });
-     });
+    });
 });

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Usi\Controllers;
 
 require_once($_SERVER['DOCUMENT_ROOT'] . "\Config.php");
@@ -9,7 +11,7 @@ use XSLTProcessor;
 use Usi\Config;
 use Usi\Infrastructure\Configuration;
 
-class BaseController
+abstract class BaseController
 {
     protected readonly Configuration $Configuration;
 

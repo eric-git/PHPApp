@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // this violates MVC pattern, will be removed later...
 namespace Usi\Views;
 
@@ -35,7 +37,7 @@ $wsdlViewModel = $wsdlController->populateViewModel();
                 </header>
                 <div class="box alt" style="text-align: initial;">
                     <div class="row">
-                        <pre class="col-12"><code class="language-xml"><?= htmlentities($wsdlViewModel->Wsdl); ?></code></pre>
+                        <pre style="height: 60vh;"><code class="language-xml"><?= htmlentities($wsdlViewModel->Wsdl); ?></code></pre>
                     </div>
                 </div>
                 <footer class="major"></footer>
