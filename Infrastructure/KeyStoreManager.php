@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Usi\Infrastructure;
 
 require_once($_SERVER['DOCUMENT_ROOT'] . "\Config.php");

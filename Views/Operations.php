@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // this violates MVC pattern, will be removed later...
 namespace Usi\Views;
 

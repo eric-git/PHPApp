@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Usi;
 
 use Usi\Infrastructure\Configuration;
