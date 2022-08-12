@@ -9,6 +9,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "\Infrastructure\KeyStoreManager.php");
 use DateTime;
 use DateTimeZone;
 use SoapClient;
+use DOMDocument;
+use DOMXPath;
 
 abstract class BaseServiceClient
 {
@@ -36,20 +38,33 @@ abstract class BaseServiceClient
         }
     }
 
-    protected function sign(string $cannonicalizedXml, string $password = "Password1!"): string
-    {
-        $content  = "-----BEGIN ENCRYPTED PRIVATE KEY-----\r\n";
-        $content .= chunk_split($this->OrgData->ProtectedPrivateKey, 64);
-        $content .= "-----END ENCRYPTED PRIVATE KEY-----";
-        $privateKey = openssl_pkey_get_private($content, $password);
-        openssl_sign($cannonicalizedXml, $signature, $privateKey, OPENSSL_ALGO_SHA256);
-        return base64_encode($signature);
-    }
-
     protected function getWsdlUrl(): string
     {
         $wsdlUrl = $this->ServiceUrl . "?wsdl";
         return $wsdlUrl;
+    }
+
+    protected static function getDomXPath(string $xml): array
+    {
+        $document = new DOMDocument();
+        $document->loadXML($xml);
+        $xpath = new DOMXPath($document);
+        $xpath->registerNamespace("s", "http://www.w3.org/2003/05/soap-envelope");
+        $xpath->registerNamespace("a", "http://www.w3.org/2005/08/addressing");
+        $xpath->registerNamespace("u", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd");
+        $xpath->registerNamespace("o", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
+        $xpath->registerNamespace("ds", "http://www.w3.org/2000/09/xmldsig#");
+        $xpath->registerNamespace("trust", "http://docs.oasis-open.org/ws-sx/ws-trust/200512");
+        $xpath->registerNamespace("wsp", "http://schemas.xmlsoap.org/ws/2004/09/policy");
+        $xpath->registerNamespace("i", "http://schemas.xmlsoap.org/ws/2005/05/identity");
+        $xpath->registerNamespace("wsu", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd");
+        $xpath->registerNamespace("xenc", "http://www.w3.org/2001/04/xmlenc#");
+        $xpath->registerNamespace("saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+        $xpath->registerNamespace("k", "http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd");
+        $xpath->registerNamespace("v4", "http://usi.gov.au/2020/ws");
+        $xpath->registerNamespace("v5", "http://usi.gov.au/2022/ws");
+
+        return [$document, $xpath];
     }
 
     protected static function getDigest(string $cannonicalizedXml, string $algorithm = "sha256"): string

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BulkVerifyUSI xmlns="http://usi.gov.au/2022/ws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OrgCode>0002</OrgCode>
+  <NoOfVerifications>5</NoOfVerifications>
+  <Verifications>
+    <Verification>
+      <RecordId>1</RecordId>
+      <USI></USI>
+      <DateOfBirth>0001-01-01</DateOfBirth>
+    </Verification>
+    <Verification>
+      <RecordId>2</RecordId>
+      <USI></USI>
+      <DateOfBirth>0001-01-01</DateOfBirth>
+    </Verification>
+    <Verification>
+      <RecordId>3</RecordId>
+      <USI></USI>
+      <DateOfBirth>0001-01-01</DateOfBirth>
+    </Verification>
+    <Verification>
+      <RecordId>4</RecordId>
+      <USI></USI>
+      <DateOfBirth>0001-01-01</DateOfBirth>
+    </Verification>
+    <Verification>
+      <RecordId>5</RecordId>
+      <USI></USI>
+      <DateOfBirth>0001-01-01</DateOfBirth>
+    </Verification>
+  </Verifications>
+</BulkVerifyUSI>

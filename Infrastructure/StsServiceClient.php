@@ -8,8 +8,6 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "\Infrastructure\BaseServiceClient.php"
 
 use DateInterval;
 use DateTime;
-use DOMDocument;
-use DOMXPath;
 use DateTimeZone;
 
 class StsServiceClient extends BaseServiceClient
@@ -19,22 +17,11 @@ class StsServiceClient extends BaseServiceClient
         parent::__construct($configuration, $configuration->Sts->IssuerUrl, $orgCode);
     }
 
-    public function getSecurityTokenRequest(): string
+    public function issue(): array
     {
         // build request
-        $templatePath = $_SERVER['DOCUMENT_ROOT'] . "\assets\\templates\sts-request-template.xml";
-        $requestDocument = new DOMDocument();
-        $requestDocument->load($templatePath);
-        $requestXPath = new DOMXPath($requestDocument);
-        $requestXPath->registerNamespace("s", "http://www.w3.org/2003/05/soap-envelope");
-        $requestXPath->registerNamespace("a", "http://www.w3.org/2005/08/addressing");
-        $requestXPath->registerNamespace("u", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd");
-        $requestXPath->registerNamespace("o", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
-        $requestXPath->registerNamespace("sig", "http://www.w3.org/2000/09/xmldsig#");
-        $requestXPath->registerNamespace("trust", "http://docs.oasis-open.org/ws-sx/ws-trust/200512");
-        $requestXPath->registerNamespace("wsp", "http://schemas.xmlsoap.org/ws/2004/09/policy");
-        $requestXPath->registerNamespace("i", "http://schemas.xmlsoap.org/ws/2005/05/identity");
-        $requestXPath->registerNamespace("wsu", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd");
+        $xml = \file_get_contents($_SERVER['DOCUMENT_ROOT'] . "\assets\\templates\sts-request-template.xml");
+        [$requestDocument, $requestXPath] = parent::getDomXPath($xml);
 
         // header
         $header = $requestXPath->query("//s:Header")->item(0);
@@ -43,7 +30,7 @@ class StsServiceClient extends BaseServiceClient
         $messageIdElement = $requestXPath->query("a:MessageID", $header)->item(0);
         $messageIdElement->nodeValue = "urn:uuid:" . parent::getGuidv4();
 
-        // <a:To s:mustUnderstand="1" u:Id="_1">
+        // <a:To>
         $toElement = $requestXPath->query("a:To", $header)->item(0);
         $toElement->nodeValue = $this->ServiceUrl;
 
@@ -65,26 +52,31 @@ class StsServiceClient extends BaseServiceClient
         $binarySecurityTokenElementIdAttribute = $requestXPath->query("o:BinarySecurityToken/@wsu:Id", $securityHeader)->item(0);
         $binarySecurityTokenElementIdAttribute->nodeValue = uniqid("uuid-");
 
-        // <sig:Signature>
-        $signatureElement = $requestXPath->query("sig:Signature", $securityHeader)->item(0);
+        // <ds:Signature>
+        $signatureElement = $requestXPath->query("ds:Signature", $securityHeader)->item(0);
 
-        // <sig:SignedInfo>
-        $signatureInfoElement = $requestXPath->query("sig:SignedInfo", $signatureElement)->item(0);
+        // <ds:SignedInfo>
+        $signatureInfoElement = $requestXPath->query("ds:SignedInfo", $signatureElement)->item(0);
 
-        // <sig:Reference URI="#_0"><sig:DigestValue> - timestamp
-        $timestampDigestValueElement = $requestXPath->query("sig:Reference[@URI='#_0']/sig:DigestValue", $signatureInfoElement)->item(0);
+        // <ds:Reference URI="#_0"><ds:DigestValue> - timestamp
+        $timestampDigestValueElement = $requestXPath->query("ds:Reference[@URI='#_0']/ds:DigestValue", $signatureInfoElement)->item(0);
         $timestampDigestValueElement->nodeValue = parent::getDigest($timestampElement->C14N(true));
 
-        // <sig:Reference URI="#_1"><sig:DigestValue> - To
-        $toDigestValueElement = $requestXPath->query("sig:Reference[@URI='#_1']/sig:DigestValue", $signatureInfoElement)->item(0);
+        // <ds:Reference URI="#_1"><ds:DigestValue> - To
+        $toDigestValueElement = $requestXPath->query("ds:Reference[@URI='#_1']/ds:DigestValue", $signatureInfoElement)->item(0);
         $toDigestValueElement->nodeValue = parent::getDigest($toElement->C14N(true));
 
-        // <sig:SignatureValue>
-        $signatureValueElement = $requestXPath->query("sig:SignatureValue", $signatureElement)->item(0);
-        $signatureValueElement->nodeValue = parent::sign($signatureInfoElement->C14N(true));
+        // <ds:SignatureValue>
+        $signatureValueElement = $requestXPath->query("ds:SignatureValue", $signatureElement)->item(0);
+        $content  = "-----BEGIN ENCRYPTED PRIVATE KEY-----\r\n";
+        $content .= chunk_split($this->OrgData->ProtectedPrivateKey, 64);
+        $content .= "-----END ENCRYPTED PRIVATE KEY-----";
+        $privateKey = openssl_pkey_get_private($content, "Password1!");
+        openssl_sign($signatureInfoElement->C14N(true), $signature, $privateKey, OPENSSL_ALGO_SHA256);
+        $signatureValueElement->nodeValue = base64_encode($signature);
 
-        // <sig:KeyInfo><o:SecurityTokenReference><o:Reference URI>
-        $referenUriAttribure = $requestXPath->query("sig:KeyInfo/o:SecurityTokenReference/o:Reference/@URI", $signatureElement)->item(0);
+        // <ds:KeyInfo><o:SecurityTokenReference><o:Reference URI>
+        $referenUriAttribure = $requestXPath->query("ds:KeyInfo/o:SecurityTokenReference/o:Reference/@URI", $signatureElement)->item(0);
         $referenUriAttribure->nodeValue = "#" . $binarySecurityTokenElementIdAttribute->nodeValue;
 
         // body
@@ -102,14 +94,9 @@ class StsServiceClient extends BaseServiceClient
         $trustExpiresElement = $requestXPath->query("trust:Lifetime/wsu:Expires", $requestSecurityTokenElement)->item(0);
         $trustExpiresElement->nodeValue = parent::GetXmlUTCDateTime($expires);
 
-        $requestXml = $requestDocument->saveXML();
-        return $requestXml;
-    }
-
-    public function issue(string $requestSecurityToken): string
-    {
-        $response = $this->ServiceClient->__doRequest($requestSecurityToken, $this->ServiceUrl, "", \SOAP_1_2);
-        return $response;
+        $request = $requestDocument->saveXML();
+        $response = $this->ServiceClient->__doRequest($request, $this->ServiceUrl, "", \SOAP_1_2);
+        return [$request, $response];
     }
 
     private function getBinarySecurityToken(): string
