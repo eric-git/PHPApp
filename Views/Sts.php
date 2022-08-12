@@ -20,10 +20,6 @@ $stsViewModel = $stsController->populateViewModel();
     <title>Test STS</title>
     <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Head.php"); ?>
     <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Styles.php"); ?>
-    <script>
-        var text = "<node g=\"hhh\">abc</node>";
-    </script>
-
 </head>
 
 <body class="is-preload landing">
@@ -42,7 +38,7 @@ $stsViewModel = $stsController->populateViewModel();
                     <details class="row" open>
                         <summary class="col-12">
                             <h3 style="display: inline-block; margin-right: 3em;">Request</h3>
-                            <a id="btnSubmit" href="#" class="button">Regenerate & Invoke</a>
+                            <a id="btnSubmit" href="#" class="button">Refresh</a>
                         </summary>
                         <pre><code id="txtRequest" class="language-xml"><?= \htmlentities($stsViewModel->RequestXml) ?></code></pre>
                     </details>

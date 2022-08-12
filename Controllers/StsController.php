@@ -25,16 +25,15 @@ class StsController extends BaseController
     {
         $stsSettings = $this->Configuration->Sts;
         $stsViewModel = new StsViewModel($stsSettings->IssuerUrl, $stsSettings->AppliesTo);
-        $data = $this->issue();
-        $stsViewModel->RequestXml = parent::cleanXml($data["Request"]);
-        $stsViewModel->ResponseXml = parent::cleanXml($data["Response"]);
+        [$request, $response] = $this->stsServiceClient->issue();
+        $stsViewModel->RequestXml = parent::cleanXml($request);
+        $stsViewModel->ResponseXml = parent::cleanXml($response);
         return $stsViewModel;
     }
 
     public function issue(): array
     {
-        $request = $this->stsServiceClient->getSecurityTokenRequest();
-        $response = $this->stsServiceClient->issue($request);
+        [$request, $response] = $this->stsServiceClient->issue();
         return [
             "Request" => parent::cleanXml($request),
             "Response" => parent::cleanXml($response)

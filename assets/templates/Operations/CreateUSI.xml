@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CreateUSI xmlns="http://usi.gov.au/2022/ws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <RequestId>51242</RequestId>
+  <OrgCode>0002</OrgCode>
+  <Application>
+    <ApplicationId>1</ApplicationId>
+    <DVSCheckRequired>true</DVSCheckRequired>
+    <UserReference>OrgUserWhoCreatedThis</UserReference>
+    <ContactDetails>
+      <CountryOfResidenceCode>1101</CountryOfResidenceCode>
+      <EmailAddress>freddy+37835062@tes.com</EmailAddress>
+      <Phone>
+        <Home>0255555555</Home>
+        <Mobile>0412341234</Mobile>
+      </Phone>
+      <NationalAddress>
+        <Address1>2872 Lenaerts St</Address1>
+        <SuburbTownCity>BROADMEADOWS</SuburbTownCity>
+        <State>TAS</State>
+        <PostCode>7330</PostCode>
+      </NationalAddress>
+    </ContactDetails>
+    <PersonalDetails>
+      <Gender>X</Gender>
+      <FirstName>Bragi</FirstName>
+      <MiddleName>Addison</MiddleName>
+      <FamilyName>Threlkeld</FamilyName>
+      <DateOfBirth>1970-08-28</DateOfBirth>
+      <CountryOfBirthCode>1101</CountryOfBirthCode>
+      <TownCityOfBirth>Springfield</TownCityOfBirth>
+      <IsPreferredName>false</IsPreferredName>
+    </PersonalDetails>
+    <DVSDocument xsi:type="DriversLicenceDocumentType">
+      <LicenceNumber>111111</LicenceNumber>
+      <State>ACT</State>
+      <CardNumber>A001234567</CardNumber>
+    </DVSDocument>
+  </Application>
+</CreateUSI>

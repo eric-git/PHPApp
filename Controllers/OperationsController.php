@@ -28,12 +28,21 @@ class OperationsController extends BaseController
         $operations = $this->usiServiceClient->getOperations();
         $operationsViewModel = new OperationsViewModel();
         $operationsViewModel->Operations = new OperationCollection();
+        $requestTemplateFile = $_SERVER['DOCUMENT_ROOT'] . "\assets\\templates\Operations\%s.xml";
         $counter = 0;
         foreach ($operations as $operation) {
-            $operationsViewModel->Operations[$counter] = new Operation($operation);
+            $operationItem = new Operation($operation);
+            $operationItem->RequestTemplate = \file_get_contents(\sprintf($requestTemplateFile, $operationItem->Name));
+            $operationsViewModel->Operations[$counter] = $operationItem;
             $counter++;
         }
 
         return $operationsViewModel;
+    }
+
+    public function invoke(string $action, string $request):string
+    {
+        $response = $this->usiServiceClient->invoke("http://usi.gov.au/2022/ws/" . $action, $request);
+        return parent::cleanXml($response);
     }
 }

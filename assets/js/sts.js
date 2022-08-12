@@ -7,18 +7,22 @@ $(document).ready(function () {
             return;
         }
 
-        $(this).addClass("disabled");
+        $(".button").addClass("disabled");
+        $("#txtResponse").html("");
         $.post("/Controllers/AjaxManager.php",
-            { "controller": "StsController", "function": "issue" },
+            {
+                "controller": "StsController",
+                "function": "issue"
+            },
             function (data) {
                 var response = JSON.parse(data);
-                $("#txtRequest").html($("<div/>").text(response.Request).html());
-                $("#txtResponse").html($("<div/>").text(response.Response).html());
+                $("#txtRequest").html(convertToHtml(response.Request));
+                $("#txtResponse").html(convertToHtml(response.Response));
                 hljs.highlightAll();
                 $("#txtRequest, #txtResponse").closest("pre").scrollTop(0);
             })
             .always(function () {
-                $("#btnSubmit").removeClass("disabled");
+                $(".button").removeClass("disabled");
             });
     });
 });

@@ -6,3 +6,4 @@
 <script src="/assets/js/jquery.dropotron.min.js"></script>
 <script src="/assets/js/util.js"></script>
 <script src="/assets/js/main.js"></script>
+<script src="/assets/js/page.js"></script>

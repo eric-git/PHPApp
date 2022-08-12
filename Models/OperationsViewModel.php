@@ -22,6 +22,7 @@ class Operation
 {
     public readonly string $Name;
     public readonly string $Signature;
+    public string $RequestTemplate;
 
     function __construct(string $signature)
     {
