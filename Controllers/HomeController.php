@@ -12,6 +12,11 @@ use Usi\Models\Section;
 
 class HomeController extends BaseController
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     public function populateViewModel(): SectionCollection
     {
         $sections = new SectionCollection(

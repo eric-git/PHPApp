@@ -15,10 +15,10 @@ class WsdlController extends BaseController
 {
     private readonly UsiServiceClient $usiServiceClient;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
-        $this->usiServiceClient = new UsiServiceClient($this->Configuration, $this->Configuration->DefaultOrgCode);
+        $this->usiServiceClient = new UsiServiceClient($this->Configuration, $this->OrgKeyData);
     }
 
     public function populateViewModel(): WsdlViewModel
@@ -27,5 +27,11 @@ class WsdlController extends BaseController
         $wsdlViewModel = new WsdlViewModel($originalWsdl);
         $wsdlViewModel->Wsdl = parent::cleanXml($originalWsdl);
         return $wsdlViewModel;
+    }
+
+    public function getWsdl(): array
+    {
+        $originalWsdl = $this->usiServiceClient->getWsdl();
+        return ["Wsdl" => parent::cleanXml($originalWsdl)];
     }
 }

@@ -34,22 +34,23 @@ $stsViewModel = $stsController->populateViewModel();
                 <header class="major">
                     <h2>Test STS</h2>
                 </header>
-                <div class="box alt" style="text-align: initial;">
-                    <details class="row" open>
-                        <summary class="col-12">
-                            <h3 style="display: inline-block; margin-right: 3em;">Request</h3>
-                            <a id="btnSubmit" href="#" class="button">Refresh</a>
-                        </summary>
-                        <pre><code id="txtRequest" class="language-xml"><?= \htmlentities($stsViewModel->RequestXml) ?></code></pre>
-                    </details>
-                    <details class="row" style="margin-top: 1em;" open>
-                        <summary class="col-12">
-                            <h3 style="display: inline-block;">Response</h3>
-                        </summary>
-                        <pre><code id="txtResponse" class="language-xml"><?= \htmlentities($stsViewModel->ResponseXml) ?></code></pre>
-                    </details>
+                <div class="box alt">
+                    <div class="row stack-container">
+                        <details open>
+                            <summary>
+                                <h3>Request</h3>
+                                <a id="btnSubmit" href="#" class="button">Refresh</a>
+                            </summary>
+                            <pre><code id="txtRequest" class="language-xml"><?= \htmlentities($stsViewModel->RequestXml) ?></code></pre>
+                        </details>
+                        <details open>
+                            <summary>
+                                <h3>Response</h3>
+                            </summary>
+                            <pre><code id="txtResponse" class="language-xml"><?= \htmlentities($stsViewModel->ResponseXml) ?></code></pre>
+                        </details>
+                    </div>
                 </div>
-                <footer class="major"></footer>
             </div>
         </section>
 
@@ -59,8 +60,6 @@ $stsViewModel = $stsController->populateViewModel();
 
     <!-- Scripts -->
     <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Scripts.php"); ?>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/languages/xml.min.js"></script>
     <script src="/assets/js/sts.js"></script>
 </body>
 

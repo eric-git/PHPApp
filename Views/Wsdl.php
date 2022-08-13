@@ -35,13 +35,15 @@ $wsdlViewModel = $wsdlController->populateViewModel();
                 <header class="major">
                     <h2>WSDL</h2>
                 </header>
-                <div class="box alt" style="text-align: initial;">
-                    <div class="row">
-                        <pre style="height: 60vh;"><code class="language-xml"><?= htmlentities($wsdlViewModel->Wsdl); ?></code></pre>
+                <div class="box alt">
+                    <div class="row stack-container" style="row-gap: .3em;">
+                        <div>
+                            <a id="btnRefresh" href="#" class="button">Refresh</a>
+                        </div>
+                        <div>
+                            <pre style="height: 60vh;"><code id="txtWsdl" class="language-xml"><?= htmlentities($wsdlViewModel->Wsdl) ?></code></pre>
+                        </div>
                     </div>
-                </div>
-                <footer class="major"></footer>
-            </div>
         </section>
 
         <!-- Footer -->
@@ -50,8 +52,6 @@ $wsdlViewModel = $wsdlController->populateViewModel();
 
     <!-- Scripts -->
     <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Scripts.php"); ?>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/languages/xml.min.js"></script>
     <script src="/assets/js/wsdl.js"></script>
 </body>
 

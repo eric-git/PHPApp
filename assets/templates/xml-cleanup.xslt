@@ -4,8 +4,8 @@
     <xsl:strip-space elements="*" />
     <xsl:template match="@*|node()" name="identity">
         <xsl:copy>
-            <xsl:apply-templates select="@*|node()"/>
+            <xsl:apply-templates select="@*|node()" />
         </xsl:copy>
     </xsl:template>
-    <xsl:template match="comment()"/>
+    <xsl:template match="comment()" />
 </xsl:stylesheet>

@@ -15,7 +15,7 @@ class StsViewModel extends BaseViewModel
     public string $RequestXml = "";
     public string $ResponseXml = "";
 
-    function __construct(string $issuerUrl, string $appliesTo)
+    public function __construct(string $issuerUrl, string $appliesTo)
     {
         $this->IssuerUrl = $issuerUrl;
         $this->AppliesTo = $appliesTo;

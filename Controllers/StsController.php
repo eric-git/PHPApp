@@ -15,10 +15,10 @@ class StsController extends BaseController
 {
     private readonly StsServiceClient $stsServiceClient;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
-        $this->stsServiceClient = new StsServiceClient($this->Configuration, $this->Configuration->DefaultOrgCode);
+        $this->stsServiceClient = new StsServiceClient($this->Configuration, $this->OrgKeyData);
     }
 
     public function populateViewModel(): StsViewModel

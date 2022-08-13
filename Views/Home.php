@@ -62,7 +62,7 @@ $sections = $controller->populateViewModel();
                     </header>
                     <p><?= htmlentities($section->Description); ?></p>
                     <ul class="actions">
-                        <li><a class="button" href="<?= "Views/" . $section->ActionViewName . ".php"; ?>"><?= htmlentities($section->ActionText); ?></a></li>
+                        <li><a class="button" href="<?= \sprintf("Views/%s.php", $section->ActionViewName) ?>"><?= htmlentities($section->ActionText); ?></a></li>
                     </ul>
                     <?php
                     if ($counter + 1 < $numberOfSections) { ?>

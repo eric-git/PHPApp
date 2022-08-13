@@ -27,7 +27,7 @@ class Section
     public readonly string $ActionText;
     public readonly string $ActionViewName;
 
-    function __construct(string $title, string $subTitle, string $description, string $background, string $actionText, string $actionViewName)
+    public function __construct(string $title, string $subTitle, string $description, string $background, string $actionText, string $actionViewName)
     {
         $this->Title = $title;
         $this->SubTitle = $subTitle;
@@ -43,7 +43,7 @@ class SectionCollection implements ArrayAccess, IteratorAggregate, Countable
 
     private array $sections;
 
-    function __construct(Section ...$sections)
+    public function __construct(Section ...$sections)
     {
         $this->sections = $sections;
     }

@@ -24,10 +24,9 @@ class Operation
     public readonly string $Signature;
     public string $RequestTemplate;
 
-    function __construct(string $signature)
+    public function __construct(string $signature)
     {
         $this->Signature = $signature;
-        $matches = array();
         preg_match("/.+\s+(.+)\(.+\)/", $signature, $matches);
         $this->Name = $matches[1];
     }
@@ -38,7 +37,7 @@ class OperationCollection implements ArrayAccess, IteratorAggregate, Countable
 
     private array $operations;
 
-    function __construct(Operation ...$operations)
+    public function __construct(Operation ...$operations)
     {
         $this->operations = $operations;
     }

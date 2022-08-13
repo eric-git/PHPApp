@@ -11,7 +11,7 @@ class WsdlViewModel extends BaseViewModel
     public readonly string $OriginalWsdl;
     public string $Wsdl;
 
-    function __construct(string $originalWsdl)
+    public function __construct(string $originalWsdl)
     {
         $this->OriginalWsdl = $originalWsdl;
     }

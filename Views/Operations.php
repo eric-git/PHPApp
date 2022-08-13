@@ -34,37 +34,42 @@ $operationsViewModel = $operationsController->populateViewModel();
                 <header class="major">
                     <h2>Test Operations</h2>
                 </header>
-                <div class="box alt row" style="margin:0; text-align: initial; column-gap: .3em; flex-wrap:nowrap;">
-                    <aside class="operation-list">
-                        <?php foreach ($operationsViewModel->Operations as $operation) { ?>
-                            <a href="#" class="button"><?= $operation->Name ?></a>
-                        <?php } ?>
-                    </aside>
-                    <div class="row operation-container">
-                        <details open>
-                            <summary class="col-12">
-                                <h3 style="display: inline-block; margin-right: 3em;">Request</h3>
-                                <a id="btnReset" href="#" class="button">Reset</a>
-                                <a id="btnSubmit" href="#" class="button">Invoke</a>
-                            </summary>
-                            <form>
-                                <div class="col-12" style="display:flex;">
+                <div class="box alt">
+                    <div class="row" style="flex-wrap: nowrap;">
+                        <aside class="stack">
+                            <?php foreach ($operationsViewModel->Operations as $operation) { ?>
+                                <a href="#" class="button"><?= $operation->Name ?></a>
+                            <?php } ?>
+                        </aside>
+                        <div class="row stack-container">
+                            <details open>
+                                <summary>
+                                    <h3>Data</h3>
+                                    <a id="btnReset" href="#" class="button">Reset</a>
+                                    <a id="btnSubmit" href="#" class="button">Invoke</a>
+                                </summary>
+                                <form style="display: flex;">
                                     <input type="hidden" name="controller" value="OperationsController" />
                                     <input type="hidden" name="function" value="invoke" />
                                     <input type="hidden" name="param_0" value="" />
-                                    <textarea id="txtRequest" name="param_1" rows="8" style="resize: none; flex-basis: 100%;"></textarea>
-                                </div>
-                            </form>
-                        </details>
-                        <details style="margin-top: 1em;" open>
-                            <summary class="col-12">
-                                <h3 style="display: inline-block;">Response</h3>
-                            </summary>
-                            <pre style="margin:0;"><code id="txtResponse" class="language-xml">Test</code></pre>
-                        </details>
+                                    <textarea id="txtData" name="param_1" rows="8" style="resize: none; flex-basis: 100%;"></textarea>
+                                </form>
+                            </details>
+                            <details>
+                                <summary>
+                                    <h3>Request</h3>
+                                </summary>
+                                <pre><code id="txtRequest" class="language-xml"></code></pre>
+                            </details>
+                            <details open>
+                                <summary>
+                                    <h3>Response</h3>
+                                </summary>
+                                <pre><code id="txtResponse" class="language-xml"></code></pre>
+                            </details>
+                        </div>
                     </div>
                 </div>
-                <footer class="major"></footer>
             </div>
         </section>
 
@@ -75,8 +80,6 @@ $operationsViewModel = $operationsController->populateViewModel();
     <!-- Scripts -->
     <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Scripts.php"); ?>
     <script src="/assets/js/operations.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/languages/xml.min.js"></script>
     <?php
     foreach ($operationsViewModel->Operations as $operation) { ?>
         <script id="<?= $operation->Name ?>" type="application/xml"><?= $operation->RequestTemplate ?></script>
