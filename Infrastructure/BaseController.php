@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Usi\Controllers;
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "\Infrastructure\ConfigurationManager.php");
+require_once(sprintf("%s/Infrastructure/Session.php", $_SERVER["DOCUMENT_ROOT"]));
+require_once(sprintf("%s/Infrastructure/ConfigurationManager.php", $_SERVER["DOCUMENT_ROOT"]));
 
 use DOMDocument;
 use XSLTProcessor;
@@ -26,7 +27,7 @@ abstract class BaseController
     protected static function cleanXml($xml): string
     {
         $domDocument = new DOMDocument();
-        $domDocument->load(\sprintf("%s\assets\\templates\xml-cleanup.xslt", $_SERVER['DOCUMENT_ROOT']));
+        $domDocument->load(sprintf("%s/assets/templates/xml-cleanup.xslt", $_SERVER["DOCUMENT_ROOT"]));
         $xslProcessor = new XSLTProcessor();
         $xslProcessor->importStyleSheet($domDocument);
         $xmlDocument = new DOMDocument();

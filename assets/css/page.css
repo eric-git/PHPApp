@@ -28,6 +28,15 @@ form {
     margin: initial !important;
 }
 
+dt {
+    font-weight: bolder;
+    margin: auto;
+}
+
+dt select {
+    font-weight: initial;
+}
+
 .stack {
     list-style-type: none;
     display: flex;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Usi\Controllers;
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "\Controllers\BaseController.php");
-require_once($_SERVER['DOCUMENT_ROOT'] . "\Models\HomeViewModel.php");
+require_once(sprintf("%s/Infrastructure/BaseController.php", $_SERVER["DOCUMENT_ROOT"]));
+require_once(sprintf("%s/Home/HomeViewModel.php", $_SERVER["DOCUMENT_ROOT"]));
 
 use Usi\Models\SectionCollection;
 use Usi\Models\Section;
@@ -17,7 +17,13 @@ class HomeController extends BaseController
         parent::__construct();
     }
 
-    public function populateViewModel(): SectionCollection
+    public function index(): void
+    {
+        $sections = $this->populateViewModel();
+        require_once(sprintf("%s/Home/Home.php", $_SERVER["DOCUMENT_ROOT"]));
+    }
+
+    private function populateViewModel(): SectionCollection
     {
         $sections = new SectionCollection(
             new Section(

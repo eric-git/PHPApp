@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Usi\Infrastructure;
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "\Infrastructure\KeyStore.php");
+require_once(sprintf("%s/Infrastructure/KeyStore.php", $_SERVER["DOCUMENT_ROOT"]));
 
 use ArrayAccess;
 use IteratorAggregate;
@@ -93,12 +93,12 @@ class ConfigurationManager
         $keyStore = new KeyStore();
 
         $mappingData = new DOMDocument();
-        $mappingData->load(sprintf("%s\assets\\templates\%s\keystore-usi-map.xml", $_SERVER['DOCUMENT_ROOT'], $environment));
+        $mappingData->load(sprintf("%s/assets/templates/%s/keystore-usi-map.xml", $_SERVER["DOCUMENT_ROOT"], $environment));
         $mappingDomXPath = new DOMXPath($mappingData);
         $mappingDomXPath->registerNamespace("x", "http://usi.gov.au/ws");
 
         $keyStoreData = new DOMDocument();
-        $keyStoreData->load(sprintf("%s\assets\\templates\%s\keystore-usi.xml", $_SERVER['DOCUMENT_ROOT'], $environment));
+        $keyStoreData->load(sprintf("%s/assets/templates/%s/keystore-usi.xml", $_SERVER["DOCUMENT_ROOT"], $environment));
         $keyStoreDomXPath = new DOMXPath($keyStoreData);
         $keyStoreDomXPath->registerNamespace("x", "http://auth.abr.gov.au/credential/xsd/SBRCredentialStore");
 
@@ -109,7 +109,7 @@ class ConfigurationManager
         foreach ($elements as $element) {
             $orgKeyData = new OrgKeyData();
             $orgKeyData->ABN = $keyStoreDomXPath->evaluate("string(x:abn)", $element);
-            $mappingElement = $mappingDomXPath->query(\sprintf("//*[@abn='%s']", $orgKeyData->ABN))->item(0);
+            $mappingElement = $mappingDomXPath->query(sprintf("//*[@abn='%s']", $orgKeyData->ABN))->item(0);
             $orgKeyData->Id = $keyStoreDomXPath->evaluate("string(@id)", $element);
             $orgKeyData->IntegrityValue = $keyStoreDomXPath->evaluate("string(@integrityValue)", $element);
             $orgKeyData->CredentialSalt = $keyStoreDomXPath->evaluate("string(@credentialSalt)", $element);
@@ -149,14 +149,14 @@ class StsSettings
 
 class ProxySettings
 {
-    public readonly string $Url;
+    public readonly string $Host;
     public readonly int $Port;
     public readonly ?string $Username;
     public readonly ?string $Password;
 
-    public function __construct(string $url, int $port, string $username = null, string $password = null)
+    public function __construct(string $host, int $port, string $username = null, string $password = null)
     {
-        $this->Url = $url;
+        $this->Host = $host;
         $this->Port = $port;
         $this->Username = $username;
         $this->Password = $password;

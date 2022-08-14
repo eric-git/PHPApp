@@ -33,7 +33,7 @@ abstract class BaseServiceClient
 
     protected function getWsdlUrl(): string
     {
-        $wsdlUrl = \sprintf("%s?wsdl", $this->ServiceUrl);
+        $wsdlUrl = sprintf("%s?wsdl", $this->ServiceUrl);
         return $wsdlUrl;
     }
 

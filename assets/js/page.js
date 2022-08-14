@@ -3,7 +3,7 @@ function convertToHtml(xml) {
 }
 
 $.ajaxSetup({
-    url: "/Controllers/AjaxManager.php",
+    url: "/ajax/index.php",
     type: "POST",
     dataType: "json"
 });
@@ -14,7 +14,7 @@ $(document).ajaxStart(function () {
 }).ajaxSuccess(function () {
     toastr.clear();
     toastr.success("Done!");
-}).ajaxError(function (e, jqxhr) {
+}).ajaxError(function () {
     toastr.clear();
     toastr.error("Error occurred.");
 });

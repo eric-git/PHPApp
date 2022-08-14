@@ -2,15 +2,7 @@
 
 declare(strict_types=1);
 
-// this violates MVC pattern, will be removed later...
 namespace Usi\Views;
-
-require_once($_SERVER['DOCUMENT_ROOT'] . "\Controllers\OperationsController.php");
-
-use Usi\Controllers\OperationsController;
-
-$operationsController = new OperationsController();
-$operationsViewModel = $operationsController->populateViewModel();
 ?>
 
 <!DOCTYPE HTML>
@@ -18,15 +10,15 @@ $operationsViewModel = $operationsController->populateViewModel();
 
 <head>
     <title>Test Operations</title>
-    <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Head.php"); ?>
-    <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Styles.php"); ?>
+    <?php require_once(sprintf("%s/Shared/Head.php", $_SERVER["DOCUMENT_ROOT"]));
+    require_once(sprintf("%s/Shared/Styles.php", $_SERVER["DOCUMENT_ROOT"])); ?>
 </head>
 
 <body class="is-preload landing">
     <div id="page-wrapper">
 
         <!-- Header -->
-        <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Header.php"); ?>
+        <?php require_once(sprintf("%s/Shared/Header.php", $_SERVER["DOCUMENT_ROOT"])); ?>
 
         <!-- Main -->
         <section class="wrapper special fade-up">
@@ -74,11 +66,11 @@ $operationsViewModel = $operationsController->populateViewModel();
         </section>
 
         <!-- Footer -->
-        <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Footer.php"); ?>
+        <?php require_once(sprintf("%s/Shared/Footer.php", $_SERVER["DOCUMENT_ROOT"])); ?>
     </div>
 
     <!-- Scripts -->
-    <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Scripts.php"); ?>
+    <?php require_once(sprintf("%s/Shared/Scripts.php", $_SERVER["DOCUMENT_ROOT"])); ?>
     <script src="/assets/js/operations.js"></script>
     <?php
     foreach ($operationsViewModel->Operations as $operation) { ?>

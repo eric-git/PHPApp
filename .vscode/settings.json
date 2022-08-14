@@ -6,7 +6,7 @@
     "html.format.templating": true,
     "references.preferredLocation": "view",
     "html.format.indentHandlebars": true,
-    "intelephense.completion.fullyQualifyGlobalConstantsAndFunctions": true,
+    "intelephense.completion.fullyQualifyGlobalConstantsAndFunctions": false,
     "php.debug.executablePath": "C:\\PHP\\PHP819\\php.exe",
     "javascript.format.insertSpaceAfterConstructor": true,
     "css.format.spaceAroundSelectorSeparator": true,

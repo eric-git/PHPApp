@@ -2,14 +2,7 @@
 
 declare(strict_types=1);
 
-// this violates MVC pattern, will be removed later...
 namespace Usi\Views;
-
-use Usi\Controllers\HomeController;
-
-require_once($_SERVER['DOCUMENT_ROOT'] . "\Controllers\HomeController.php");
-$controller = new HomeController();
-$sections = $controller->populateViewModel();
 ?>
 
 <!DOCTYPE HTML>
@@ -17,15 +10,15 @@ $sections = $controller->populateViewModel();
 
 <head>
     <title>The future has landed</title>
-    <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Head.php"); ?>
-    <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Styles.php"); ?>
+    <?php require_once(sprintf("%s/Shared/Head.php", $_SERVER["DOCUMENT_ROOT"]));
+    require_once(sprintf("%s/Shared/Styles.php", $_SERVER["DOCUMENT_ROOT"])); ?>
 </head>
 
 <body class="is-preload landing">
     <div id="page-wrapper">
 
         <!-- Header -->
-        <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Header.php"); ?>
+        <?php require_once(sprintf("%s/Shared/Header.php", $_SERVER["DOCUMENT_ROOT"])); ?>
 
         <!-- Banner -->
         <section id="banner">
@@ -62,7 +55,7 @@ $sections = $controller->populateViewModel();
                     </header>
                     <p><?= htmlentities($section->Description); ?></p>
                     <ul class="actions">
-                        <li><a class="button" href="<?= \sprintf("Views/%s.php", $section->ActionViewName) ?>"><?= htmlentities($section->ActionText); ?></a></li>
+                        <li><a class="button" href="/<?= $section->ActionViewName ?>"><?= htmlentities($section->ActionText); ?></a></li>
                     </ul>
                     <?php
                     if ($counter + 1 < $numberOfSections) { ?>
@@ -73,11 +66,11 @@ $sections = $controller->populateViewModel();
         <?php } ?>
 
         <!-- Footer -->
-        <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Footer.php"); ?>
+        <?php require_once(sprintf("%s/Shared/Footer.php", $_SERVER["DOCUMENT_ROOT"])); ?>
     </div>
 
     <!-- Scripts -->
-    <?php require_once($_SERVER['DOCUMENT_ROOT'] . "\Views\Shared\Scripts.php"); ?>
+    <?php require_once(sprintf("%s/Shared/Scripts.php", $_SERVER["DOCUMENT_ROOT"])); ?>
 </body>
 
 </html>

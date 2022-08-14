@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Usi\Infrastructure;
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "\Infrastructure\BaseServiceClient.php");
+require_once(sprintf("%s/Infrastructure/BaseServiceClient.php", $_SERVER["DOCUMENT_ROOT"]));
 
 use DateInterval;
 use DateTime;
@@ -20,7 +20,7 @@ class StsServiceClient extends BaseServiceClient
     public function issue(): array
     {
         // build request
-        $xml = \file_get_contents(\sprintf("%s\assets\\templates\sts-request-template.xml", $_SERVER['DOCUMENT_ROOT']));
+        $xml = file_get_contents(sprintf("%s\assets\\templates\sts-request-template.xml", $_SERVER["DOCUMENT_ROOT"]));
         [$requestDocument, $requestXPath] = parent::getDomXPath($xml);
 
         // header
@@ -28,7 +28,7 @@ class StsServiceClient extends BaseServiceClient
 
         // <a:MessageID>
         $messageIdElement = $requestXPath->query("a:MessageID", $header)->item(0);
-        $messageIdElement->nodeValue = \sprintf("urn:uuid:%s", parent::getGuidv4());
+        $messageIdElement->nodeValue = sprintf("urn:uuid:%s", parent::getGuidv4());
 
         // <a:To>
         $toElement = $requestXPath->query("a:To", $header)->item(0);
@@ -48,9 +48,9 @@ class StsServiceClient extends BaseServiceClient
 
         // <o:BinarySecurityToken>
         $binarySecurityTokenElement = $requestXPath->query("o:BinarySecurityToken", $securityHeader)->item(0);
-        $content = \sprintf("-----BEGIN PKCS7-----\r\n%s-----END PKCS7-----", chunk_split($this->OrgData->PublicCertificate, 64));
-        \openssl_pkcs7_read($content, $certificates);
-        $binarySecurityToken = \str_replace(["\n", "\r", "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----"], "", $certificates[0]);
+        $content = sprintf("-----BEGIN PKCS7-----\r\n%s-----END PKCS7-----", chunk_split($this->OrgData->PublicCertificate, 64));
+        openssl_pkcs7_read($content, $certificates);
+        $binarySecurityToken = str_replace(["\n", "\r", "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----"], "", $certificates[0]);
         $binarySecurityTokenElement->nodeValue = $binarySecurityToken;
         $binarySecurityTokenElementIdAttribute = $requestXPath->query("o:BinarySecurityToken/@wsu:Id", $securityHeader)->item(0);
         $binarySecurityTokenElementIdAttribute->nodeValue = uniqid("uuid-");
@@ -71,14 +71,14 @@ class StsServiceClient extends BaseServiceClient
 
         // <ds:SignatureValue>
         $signatureValueElement = $requestXPath->query("ds:SignatureValue", $signatureElement)->item(0);
-        $content = \sprintf("-----BEGIN ENCRYPTED PRIVATE KEY-----\r\n%s-----END ENCRYPTED PRIVATE KEY-----", chunk_split($this->OrgData->ProtectedPrivateKey, 64));
+        $content = sprintf("-----BEGIN ENCRYPTED PRIVATE KEY-----\r\n%s-----END ENCRYPTED PRIVATE KEY-----", chunk_split($this->OrgData->ProtectedPrivateKey, 64));
         $privateKey = openssl_pkey_get_private($content, $this->OrgData->PrivateKeyPassword);
         openssl_sign($signatureInfoElement->C14N(true), $signature, $privateKey, OPENSSL_ALGO_SHA256);
         $signatureValueElement->nodeValue = base64_encode($signature);
 
         // <ds:KeyInfo><o:SecurityTokenReference><o:Reference URI>
         $referenUriAttribure = $requestXPath->query("ds:KeyInfo/o:SecurityTokenReference/o:Reference/@URI", $signatureElement)->item(0);
-        $referenUriAttribure->nodeValue = \sprintf("#%s", $binarySecurityTokenElementIdAttribute->nodeValue);
+        $referenUriAttribure->nodeValue = sprintf("#%s", $binarySecurityTokenElementIdAttribute->nodeValue);
 
         // body
         $requestSecurityTokenElement = $requestXPath->query("//s:Body/trust:RequestSecurityToken")->item(0);
