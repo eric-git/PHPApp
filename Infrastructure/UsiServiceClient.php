@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Usi\Infrastructure;
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "\Infrastructure\BaseServiceClient.php");
-require_once($_SERVER['DOCUMENT_ROOT'] . "\Infrastructure\StsServiceClient.php");
+require_once(sprintf("%s/Infrastructure/BaseServiceClient.php", $_SERVER["DOCUMENT_ROOT"]));
+require_once(sprintf("%s/Infrastructure/StsServiceClient.php", $_SERVER["DOCUMENT_ROOT"]));
 
 use DateTime;
 use DateTimeZone;
@@ -15,10 +15,10 @@ class UsiServiceClient extends BaseServiceClient
 {
     private readonly StsServiceClient $stsServiceClient;
 
-    function __construct(Configuration $configuration, string $orgCode)
+    public function __construct(Configuration $configuration, OrgKeyData $orgKeyData)
     {
-        parent::__construct($configuration, $configuration->UsiServiceUrl, $orgCode);
-        $this->stsServiceClient = new StsServiceClient($configuration, $orgCode);
+        parent::__construct($configuration, $configuration->UsiServiceUrl, $orgKeyData);
+        $this->stsServiceClient = new StsServiceClient($configuration, $orgKeyData);
     }
 
     public function getWsdl(): string
@@ -34,12 +34,12 @@ class UsiServiceClient extends BaseServiceClient
         return $functions;
     }
 
-    public function invoke(string $soapAction, string $soapBody): string
+    public function invoke(string $soapAction, string $soapBody): array
     {
-        [, $stsResponse] = $this->stsServiceClient->issue();
+        [$stsRequest, $stsResponse] = $this->stsServiceClient->issue();
         [, $stsResponseXPath] = parent::getDomXPath($stsResponse);
 
-        $xml = \file_get_contents($_SERVER['DOCUMENT_ROOT'] . "\assets\\templates\usi-request-template.xml");
+        $xml = file_get_contents(sprintf("%s/assets/templates/usi-request-template.xml", $_SERVER["DOCUMENT_ROOT"]));
         [$usiRequestDocument, $usiRequestXPath] = parent::getDomXPath($xml);
 
         // header
@@ -51,7 +51,7 @@ class UsiServiceClient extends BaseServiceClient
 
         // <a:MessageID>
         $messageIdElement = $usiRequestXPath->query("a:MessageID", $header)->item(0);
-        $messageIdElement->nodeValue = "urn:uuid:" . parent::getGuidv4();
+        $messageIdElement->nodeValue = sprintf("urn:uuid:%s", parent::getGuidv4());
 
         // <a:To>
         $toElement = $usiRequestXPath->query("a:To", $header)->item(0);
@@ -91,9 +91,9 @@ class UsiServiceClient extends BaseServiceClient
         // <ds:SignatureValue>
         $signatureValueElement = $usiRequestXPath->query("ds:SignatureValue", $signatureElement)->item(0);
         $stsProofTokenKeyElement = $stsResponseXPath->query("trust:RequestedProofToken/trust:BinarySecret", $requestSecurityTokenResponseElement)->item(0);
-        $stsProofToken = \base64_decode($stsProofTokenKeyElement->nodeValue);
+        $stsProofToken = base64_decode($stsProofTokenKeyElement->nodeValue);
         $signatureValue = hash_hmac("sha1",  $signatureInfoElement->C14N(\true), $stsProofToken, true);
-        $signatureValueElement->nodeValue = \base64_encode($signatureValue);
+        $signatureValueElement->nodeValue = base64_encode($signatureValue);
 
         // <ds:KeyInfo>
         $keyInfoElement = $usiRequestXPath->query("ds:KeyInfo", $signatureElement)->item(0);
@@ -102,7 +102,7 @@ class UsiServiceClient extends BaseServiceClient
         $keyInfoElement->appendChild($importedElement);
 
         // body
-        $body = $usiRequestXPath->query("s:Body")->item(0);
+        $body = $usiRequestXPath->query("//s:Body")->item(0);
 
         // content
         [, $bodyContentXPath] = parent::getDomXPath($soapBody);
@@ -110,8 +110,8 @@ class UsiServiceClient extends BaseServiceClient
         $bodyContentNode = $usiRequestDocument->importNode($bodyContentNode, true);
         $body->appendChild($bodyContentNode);
 
-        $requestXml = $usiRequestDocument->saveXML();
-        $response = $this->ServiceClient->__doRequest($requestXml, $this->ServiceUrl, "", \SOAP_1_2);
-        return $response;
+        $usiRequest = $usiRequestDocument->saveXML();
+        $usiResponse = $this->ServiceClient->__doRequest($usiRequest, $this->ServiceUrl, "", \SOAP_1_2);
+        return [$stsRequest, $stsResponse, $usiRequest, $usiResponse];
     }
 }

@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    $(".operation-list .button").click(function (e) {
+    $(".stack .button").click(function (e) {
         e.preventDefault();
         if ($(this).hasClass("disabled")) {
             return;
         }
-        
-        $(".operation-list .button").removeClass("primary");
+
+        $(".stack .button").removeClass("primary");
         $(this).addClass("primary");
         $("#btnReset").click();
     });
@@ -15,12 +15,12 @@ $(document).ready(function () {
         if ($(this).hasClass("disabled")) {
             return;
         }
-        
+
         var operation = getCurrentOperation();
         var xml = $("script[id='" + operation + "']").text();
         $(":hidden[name='param_0']").val(operation);
-        $("#txtRequest").val(xml);
-        $("#txtResponse").html("");
+        $("#txtData").val(xml);
+        $("#txtResponse, #txtRequest").html("");
     });
 
     $("#btnSubmit").click(function (e) {
@@ -31,24 +31,24 @@ $(document).ready(function () {
 
         var formData = $("form").serialize();
         $(".button").addClass("disabled");
-        $("#txtRequest").attr("disabled", "");
-        $("#txtResponse").html("");
-        $.post("/Controllers/AjaxManager.php",
-            formData,
-            function (data) {
-                $("#txtResponse").html(convertToHtml(data));
-                hljs.highlightAll();
-                $("#txtResponse").closest("pre").scrollTop(0);
-            })
-            .always(function () {
-                $(".button").removeClass("disabled");
-                $("#txtRequest").removeAttr("disabled");
-            });
+        $("#txtData").attr("disabled", "");
+        $("#txtRequest, #txtResponse").html("");
+        $.ajax({
+            data: formData
+        }).done(function (data) {
+            $("#txtRequest").html(convertToHtml(data.UsiRequest));
+            $("#txtResponse").html(convertToHtml(data.UsiResponse));
+            hljs.highlightAll();
+            $("#txtRequest, #txtResponse").scrollTop(0);
+        }).always(function () {
+            $(".button").removeClass("disabled");
+            $("#txtData").removeAttr("disabled");
+        });
     });
 
-    $(".operation-list .button:first").click();
+    $(".stack .button:first").click();
 });
 
 function getCurrentOperation() {
-    return $(".operation-list .button.primary").text();
+    return $(".stack .button.primary").text();
 }

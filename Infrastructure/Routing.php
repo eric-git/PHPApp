@@ -2,6 +2,4 @@
 
 declare(strict_types=1);
 
-namespace Usi;
-
-phpinfo();
+namespace Usi\Infrastructure;

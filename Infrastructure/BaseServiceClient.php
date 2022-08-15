@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Usi\Infrastructure;
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "\Infrastructure\KeyStoreManager.php");
-
 use DateTime;
 use DateTimeZone;
 use SoapClient;
@@ -19,28 +17,23 @@ abstract class BaseServiceClient
     protected readonly string $ServiceUrl;
     protected readonly OrgKeyData $OrgData;
 
-    function __construct(Configuration $configuration, string $serviceUrl, string $orgCode)
+    protected function __construct(Configuration $configuration, string $serviceUrl, OrgKeyData $orgKeyData)
     {
         $this->Configuration = $configuration;
         $this->ServiceUrl = $serviceUrl;
+        $this->OrgData = $orgKeyData;
         $wsdlUrl = $this->getWsdlUrl($serviceUrl);
-        $options = array();
+        $options = [];
         if (isset($configuration->Proxy)) {
             // todo: make proxy work
         }
+
         $this->ServiceClient = new SoapClient($wsdlUrl, $options);
-        $keyStore = new KeyStoreManager();
-        foreach ($keyStore->Credentials as $credential) {
-            if (strcasecmp($credential->Code, $orgCode) === 0) {
-                $this->OrgData = $credential;
-                break;
-            }
-        }
     }
 
     protected function getWsdlUrl(): string
     {
-        $wsdlUrl = $this->ServiceUrl . "?wsdl";
+        $wsdlUrl = sprintf("%s?wsdl", $this->ServiceUrl);
         return $wsdlUrl;
     }
 

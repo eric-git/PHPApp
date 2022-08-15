@@ -9,20 +9,18 @@ $(document).ready(function () {
 
         $(".button").addClass("disabled");
         $("#txtResponse").html("");
-        $.post("/Controllers/AjaxManager.php",
-            {
+        $.ajax({
+            data: {
                 "controller": "StsController",
                 "function": "issue"
-            },
-            function (data) {
-                var response = JSON.parse(data);
-                $("#txtRequest").html(convertToHtml(response.Request));
-                $("#txtResponse").html(convertToHtml(response.Response));
-                hljs.highlightAll();
-                $("#txtRequest, #txtResponse").closest("pre").scrollTop(0);
-            })
-            .always(function () {
-                $(".button").removeClass("disabled");
-            });
+            }
+        }).done(function (data) {
+            $("#txtRequest").html(convertToHtml(data.Request));
+            $("#txtResponse").html(convertToHtml(data.Response));
+            hljs.highlightAll();
+            $("#txtRequest, #txtResponse").scrollTop(0);
+        }).always(function () {
+            $(".button").removeClass("disabled");
+        });
     });
 });
