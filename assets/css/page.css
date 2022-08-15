@@ -32,6 +32,11 @@ dt select {
     font-weight: initial;
 }
 
+summary h3 {
+    margin-right: 2em;
+    display: inline-block;
+}
+
 .stack {
     list-style-type: none;
     display: flex;
