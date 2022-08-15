@@ -19,11 +19,6 @@ summary {
     cursor: default;
 }
 
-summary h3 {
-    display: inline-block;
-    margin-right: 3em;
-}
-
 form {
     margin: initial !important;
 }
@@ -43,11 +38,12 @@ dt select {
     flex-direction: column;
     flex-wrap: wrap;
     row-gap: .3em;
+    text-align: initial;
 }
 
 .stack .button {
     white-space: nowrap;
-    text-align: initial;
+    text-align: inherit;
 }
 
 .stack-container {

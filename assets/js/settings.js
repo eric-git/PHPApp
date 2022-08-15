@@ -34,10 +34,19 @@ $(document).ready(function () {
             $("#org-" + data.Environment + " option").each(function () {
                 $(this).attr("data-current", $(this).val() === data.OrgCode);
             });
+            $("#txtCurrentEnvironment").text(data.Environment);
+            $("#txtCurrentOrgCode").text(data.OrgCode);
             $("#btnReset").click();
         }).always(function () {
             $(".button, select").removeClass("disabled");
             $("[name='param_1']:hidden").removeAttr("disabled");
+        });
+    });
+
+    $("aside [data-section]").click(function () {
+        $(this).addClass("primary").siblings().removeClass("primary");
+        $("aside [data-section]").each(function () {
+            $("#" + $(this).data("section")).toggle($(this).hasClass("primary"));
         });
     });
 
