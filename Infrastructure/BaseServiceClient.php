@@ -25,7 +25,16 @@ abstract class BaseServiceClient
         $wsdlUrl = $this->getWsdlUrl($serviceUrl);
         $options = [];
         if (isset($configuration->Proxy)) {
-            // todo: make proxy work
+            $options = [
+                "proxy_host" => $configuration->Proxy->Host,
+                "proxy_port" => $configuration->Proxy->Port
+            ];
+            if (isset($configuration->Proxy->Username)) {
+                $options = array_merge($options, [
+                    "proxy_login" => $configuration->Proxy->Username,
+                    "proxy_password" => $configuration->Proxy->Password
+                ]);
+            }
         }
 
         $this->ServiceClient = new SoapClient($wsdlUrl, $options);
