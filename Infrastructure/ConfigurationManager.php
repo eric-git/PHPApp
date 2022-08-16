@@ -36,102 +36,110 @@ class ConfigurationManager
             return;
         }
 
-        self::$Configurations = new ConfigurationCollection(
-            // LOCAL
-            new Configuration(
-                "LOCAL",
-                new StsSettings(
-                    "https://softwareauthorisations.acc.ato.gov.au/R3.0/S007v1.3/service.svc",
-                    "https://3pt.portal.usi.gov.au/service/usiservice.svc"
-                ),
-                "https://localhost:4443/service/v5/usiservice.svc",
-                "VA1803",
-                self::getKeyStore("LOCAL"),
-                new ProxySettings("dmz", 8080)
-            ),
-
-            // DEV
-            new Configuration(
-                "DEV",
-                new StsSettings(
-                    "https://softwareauthorisations.acc.ato.gov.au/R3.0/S007v1.3/service.svc",
-                    "https://3pt.portal.usi.gov.au/service/usiservice.svc"
-                ),
-                "https://dev.portal.usi.gov.au/service/v5/usiservice.svc",
-                "VA1803",
-                self::getKeyStore("DEV")
-            ),
-
-            // 3PT
-            new Configuration(
-                "3PT",
-                new StsSettings(
-                    "https://softwareauthorisations.acc.ato.gov.au/R3.0/S007v1.3/service.svc",
-                    "https://3pt.portal.usi.gov.au/service/usiservice.svc"
-                ),
-                "https://3pt.portal.usi.gov.au/service/v5/usiservice.svc",
-                "VA1803",
-                self::getKeyStore("3PT")
-            ),
-
-            // PROD
-            new Configuration(
-                "PROD",
-                new StsSettings(
-                    "https://softwareauthorisations.ato.gov.au/R3.0/S007v1.3/service.svc",
-                    "https://portal.usi.gov.au/service/usiservice.svc"
-                ),
-                "https://portal.usi.gov.au/service/v5/usiservice.svc",
-                "VA1803",
-                self::getKeyStore("PROD")
-            )
-        );
+        $baseDirectory = sprintf("%s/assets/configuration", $_SERVER["DOCUMENT_ROOT"]);
+        self::$Configurations = new ConfigurationCollection();
+        $counter = 0;
+        $environmentPaths = glob(sprintf("%s/*", $baseDirectory), GLOB_ONLYDIR);
+        foreach ($environmentPaths as $environmentPath) {
+            preg_match("/[^\/]+$/", $environmentPath, $environment);
+            [$environmentDomXPath, $keyStoreDomXPath] = self::getEnvironmentDomXPath($environmentPath);
+            self::$Configurations[$counter] = self::getEnvironment($environment[0], $environmentDomXPath, $keyStoreDomXPath);
+            $counter++;
+        }
     }
 
-    private static function getKeyStore(string $environment): KeyStore
+    private static function getEnvironment(string $environment, DomXPath $environmentDomXPath, DomXPath $keyStoreDomXPath): Configuration
+    {
+        $envirommentElement = $environmentDomXPath->query("//usi:environment")->item(0);
+        $configuration = new Configuration(
+            $environment,
+            $environmentDomXPath->evaluate("string(@url)", $envirommentElement),
+            $environmentDomXPath->evaluate("string(@defaultOrgCode)", $envirommentElement),
+            self::getStsSettings($environmentDomXPath),
+            self::getKeyStore($keyStoreDomXPath, $environmentDomXPath),
+            self::getProxySettings($environmentDomXPath)
+        );
+
+        return $configuration;
+    }
+
+    private static function getStsSettings(DomXPath $environmentDomXPath): StsSettings
+    {
+        $stsElement = $environmentDomXPath->query("//usi:environment/usi:sts")->item(0);
+        $stsSettings = new StsSettings(
+            $environmentDomXPath->evaluate("string(@url)", $stsElement),
+            $environmentDomXPath->evaluate("string(@uri)", $stsElement)
+        );
+
+        return $stsSettings;
+    }
+
+    private static function getKeyStore(DomXPath $keyStoreDomXPath, DomXPath $environmentDomXPath): KeyStore
     {
         $keyStore = new KeyStore();
-
-        $mappingData = new DOMDocument();
-        $mappingData->load(sprintf("%s/assets/templates/%s/keystore-usi-map.xml", $_SERVER["DOCUMENT_ROOT"], $environment));
-        $mappingDomXPath = new DOMXPath($mappingData);
-        $mappingDomXPath->registerNamespace("x", "http://usi.gov.au/ws");
-
-        $keyStoreData = new DOMDocument();
-        $keyStoreData->load(sprintf("%s/assets/templates/%s/keystore-usi.xml", $_SERVER["DOCUMENT_ROOT"], $environment));
-        $keyStoreDomXPath = new DOMXPath($keyStoreData);
-        $keyStoreDomXPath->registerNamespace("x", "http://auth.abr.gov.au/credential/xsd/SBRCredentialStore");
-
-        $keyStore->Salt = $keyStoreDomXPath->evaluate("string(//x:credentialStore/x:salt)");
+        $keyStore->Salt = $keyStoreDomXPath->evaluate("string(//ato:credentialStore/ato:salt)");
         $keyStore->Credentials = new OrgKeyDataCollection();
         $counter = 0;
-        $elements = $keyStoreDomXPath->query("//x:credential");
+        $elements = $keyStoreDomXPath->query("//ato:credential");
         foreach ($elements as $element) {
             $orgKeyData = new OrgKeyData();
-            $orgKeyData->ABN = $keyStoreDomXPath->evaluate("string(x:abn)", $element);
-            $mappingElement = $mappingDomXPath->query(sprintf("//*[@abn='%s']", $orgKeyData->ABN))->item(0);
+            $orgKeyData->ABN = $keyStoreDomXPath->evaluate("string(ato:abn)", $element);
+            $mappingElement = $environmentDomXPath->query(sprintf("//usi:environment/usi:sts/usi:keyStoreMapping/usi:add[@abn='%s']", $orgKeyData->ABN))->item(0);
             $orgKeyData->Id = $keyStoreDomXPath->evaluate("string(@id)", $element);
             $orgKeyData->IntegrityValue = $keyStoreDomXPath->evaluate("string(@integrityValue)", $element);
             $orgKeyData->CredentialSalt = $keyStoreDomXPath->evaluate("string(@credentialSalt)", $element);
             $orgKeyData->CredentialType = $keyStoreDomXPath->evaluate("string(@credentialType)", $element);
-            $orgKeyData->Name1 = $keyStoreDomXPath->evaluate("string(x:name1)", $element);
-            $orgKeyData->Name2 = $keyStoreDomXPath->evaluate("string(x:name2)", $element);
-            $orgKeyData->Code = $mappingDomXPath->evaluate("string(@code)", $mappingElement);
-            $orgKeyData->LegalName = $keyStoreDomXPath->evaluate("string(x:legalName)", $element);
-            $orgKeyData->PersonId = $keyStoreDomXPath->evaluate("string(x:personId)", $element);
-            $orgKeyData->SerialNumber = $keyStoreDomXPath->evaluate("string(x:serialNumber)", $element);
-            $orgKeyData->CreationDate = new DateTime($keyStoreDomXPath->evaluate("string(x:creationDate)", $element));
-            $orgKeyData->NotBefore = new DateTime($keyStoreDomXPath->evaluate("string(x:notBefore)", $element));
-            $orgKeyData->NotAfter = new DateTime($keyStoreDomXPath->evaluate("string(x:notAfter)", $element));
-            $orgKeyData->Sha1fingerprint = $keyStoreDomXPath->evaluate("string(x:sha1fingerprint)", $element);
-            $orgKeyData->PublicCertificate = $keyStoreDomXPath->evaluate("string(x:publicCertificate)", $element);
-            $orgKeyData->ProtectedPrivateKey = $keyStoreDomXPath->evaluate("string(x:protectedPrivateKey)", $element);
-            $orgKeyData->PrivateKeyPassword = $mappingDomXPath->evaluate("string(@privateKeyPassword)", $mappingElement);
+            $orgKeyData->Name1 = $keyStoreDomXPath->evaluate("string(ato:name1)", $element);
+            $orgKeyData->Name2 = $keyStoreDomXPath->evaluate("string(ato:name2)", $element);
+            $orgKeyData->Code = $environmentDomXPath->evaluate("string(@code)", $mappingElement);
+            $orgKeyData->LegalName = $keyStoreDomXPath->evaluate("string(ato:legalName)", $element);
+            $orgKeyData->PersonId = $keyStoreDomXPath->evaluate("string(ato:personId)", $element);
+            $orgKeyData->SerialNumber = $keyStoreDomXPath->evaluate("string(ato:serialNumber)", $element);
+            $orgKeyData->CreationDate = new DateTime($keyStoreDomXPath->evaluate("string(ato:creationDate)", $element));
+            $orgKeyData->NotBefore = new DateTime($keyStoreDomXPath->evaluate("string(ato:notBefore)", $element));
+            $orgKeyData->NotAfter = new DateTime($keyStoreDomXPath->evaluate("string(ato:notAfter)", $element));
+            $orgKeyData->Sha1fingerprint = $keyStoreDomXPath->evaluate("string(ato:sha1fingerprint)", $element);
+            $orgKeyData->PublicCertificate = $keyStoreDomXPath->evaluate("string(ato:publicCertificate)", $element);
+            $orgKeyData->ProtectedPrivateKey = $keyStoreDomXPath->evaluate("string(ato:protectedPrivateKey)", $element);
+            $orgKeyData->PrivateKeyPassword = $environmentDomXPath->evaluate("string(@privateKeyPassword)", $mappingElement);
             $keyStore->Credentials[$counter] = $orgKeyData;
             $counter++;
         }
 
         return $keyStore;
+    }
+
+    private static function getProxySettings(DomXPath $environmentDomXPath): ?ProxySettings
+    {
+        $proxyElements = $environmentDomXPath->query("//usi:environment/usi:proxy");
+        if ($proxyElements->length === 0) {
+            return null;
+        }
+
+        $proxyElement = $proxyElements->item(0);
+        $proxySettings = new ProxySettings(
+            $environmentDomXPath->evaluate("string(@host)", $proxyElement),
+            intval($environmentDomXPath->evaluate("number(@port)", $proxyElement)),
+            $environmentDomXPath->evaluate("string(@username)", $proxyElement),
+            $environmentDomXPath->evaluate("string(@password)", $proxyElement)
+        );
+
+        return $proxySettings;
+    }
+
+    private static function getEnvironmentDomXPath(string $containerPath): array
+    {
+        $environmentData = new DOMDocument();
+        $environmentData->load(sprintf("%s/environment.xml", $containerPath));
+        $environmentDomXPath = new DOMXPath($environmentData);
+        $environmentDomXPath->registerNamespace("usi", "http://usi.gov.au/ws");
+
+        $keyStoreData = new DOMDocument();
+        $keyStoreData->load(sprintf("%s/keystore-usi.xml", $containerPath));
+        $keyStoreDomXPath = new DOMXPath($keyStoreData);
+        $keyStoreDomXPath->registerNamespace("ato", "http://auth.abr.gov.au/credential/xsd/SBRCredentialStore");
+
+        return [$environmentDomXPath, $keyStoreDomXPath];
     }
 }
 
@@ -172,7 +180,7 @@ class Configuration
     public readonly ?ProxySettings $Proxy;
     public readonly KeyStore $KeyStore;
 
-    public function __construct(string $environment, StsSettings $sts, string $usiServiceUrl, string $defaultOrgCode, KeyStore $keyStore, ProxySettings $proxy = null)
+    public function __construct(string $environment, string $usiServiceUrl, string $defaultOrgCode, StsSettings $sts, KeyStore $keyStore, ProxySettings $proxy = null)
     {
         $this->Environment = $environment;
         $this->Sts = $sts;

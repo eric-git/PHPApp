@@ -3,9 +3,6 @@
 declare(strict_types=1);
 
 namespace Usi\Views;
-
-use Usi\Infrastructure\OrgKeyData;
-
 ?>
 
 <!DOCTYPE HTML>
@@ -68,8 +65,8 @@ use Usi\Infrastructure\OrgKeyData;
                                             $proxyUserName = "";
                                             if (isset($configuration->Proxy)) {
                                                 $proxyUrl = sprintf("%s:%d", $configuration->Proxy->Host, $configuration->Proxy->Port);
-                                                if (isset($configuration->Proxy->UserName)) {
-                                                    $proxyUserName = $configuration->Proxy->UserName;
+                                                if (isset($configuration->Proxy->Username)) {
+                                                    $proxyUserName = $configuration->Proxy->Username;
                                                 }
                                             } ?>
                                             <dl id="env-<?= $configuration->Environment ?>" class="row" style="display: none;">
