@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<BulkVerifyUSI xmlns="http://usi.gov.au/2022/ws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <OrgCode>0002</OrgCode>
-  <NoOfVerifications>5</NoOfVerifications>
-  <Verifications>
-    <Verification>
-      <RecordId>1</RecordId>
-      <USI></USI>
-      <DateOfBirth>0001-01-01</DateOfBirth>
-    </Verification>
-    <Verification>
-      <RecordId>2</RecordId>
-      <USI></USI>
-      <DateOfBirth>0001-01-01</DateOfBirth>
-    </Verification>
-    <Verification>
-      <RecordId>3</RecordId>
-      <USI></USI>
-      <DateOfBirth>0001-01-01</DateOfBirth>
-    </Verification>
-    <Verification>
-      <RecordId>4</RecordId>
-      <USI></USI>
-      <DateOfBirth>0001-01-01</DateOfBirth>
-    </Verification>
-    <Verification>
-      <RecordId>5</RecordId>
-      <USI></USI>
-      <DateOfBirth>0001-01-01</DateOfBirth>
-    </Verification>
-  </Verifications>
-</BulkVerifyUSI>
+<usi:BulkVerifyUSI xmlns:usi="http://usi.gov.au/2022/ws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <usi:OrgCode></usi:OrgCode>
+  <usi:NoOfVerifications>5</usi:NoOfVerifications>
+  <usi:Verifications>
+    <usi:Verification>
+      <usi:RecordId>1</usi:RecordId>
+      <usi:USI></usi:USI>
+      <usi:DateOfBirth>0001-01-01</usi:DateOfBirth>
+    </usi:Verification>
+    <usi:Verification>
+      <usi:RecordId>2</usi:RecordId>
+      <usi:USI></usi:USI>
+      <usi:DateOfBirth>0001-01-01</usi:DateOfBirth>
+    </usi:Verification>
+    <usi:Verification>
+      <usi:RecordId>3</usi:RecordId>
+      <usi:USI></usi:USI>
+      <usi:DateOfBirth>0001-01-01</usi:DateOfBirth>
+    </usi:Verification>
+    <usi:Verification>
+      <usi:RecordId>4</usi:RecordId>
+      <usi:USI></usi:USI>
+      <usi:DateOfBirth>0001-01-01</usi:DateOfBirth>
+    </usi:Verification>
+    <usi:Verification>
+      <usi:RecordId>5</usi:RecordId>
+      <usi:USI></usi:USI>
+      <usi:DateOfBirth>0001-01-01</usi:DateOfBirth>
+    </usi:Verification>
+  </usi:Verifications>
+</usi:BulkVerifyUSI>

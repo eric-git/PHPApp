@@ -15,5 +15,5 @@ $parameters = array_filter($_POST, function ($key) {
 }, ARRAY_FILTER_USE_KEY);
 $controller = new (sprintf("%s\\%s", __NAMESPACE__, $_POST["controller"]));
 $function = $_POST["function"];
-$response =  call_user_func_array([$controller, $function], array_values($parameters));
+$response = call_user_func_array([$controller, $function], array_values($parameters));
 echo json_encode($response);

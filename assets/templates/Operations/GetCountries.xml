@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GetCountries xmlns="http://usi.gov.au/2022/ws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <OrgCode>0002</OrgCode>
-</GetCountries>
+<usi:GetCountries xmlns:usi="http://usi.gov.au/2022/ws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <usi:OrgCode></usi:OrgCode>
+</usi:GetCountries>

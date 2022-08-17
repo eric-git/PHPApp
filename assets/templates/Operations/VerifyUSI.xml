@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<VerifyUSI xmlns="http://usi.gov.au/2022/ws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <OrgCode>0002</OrgCode>
-  <USI></USI>
-  <FirstName>FirstName</FirstName>
-  <FamilyName>FamilyName</FamilyName>
-  <SingleName>SingleName</SingleName>
-  <DateOfBirth>0001-01-01</DateOfBirth>
-</VerifyUSI>
+<usi:VerifyUSI xmlns:usi="http://usi.gov.au/2022/ws" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <usi:OrgCode></usi:OrgCode>
+  <usi:USI></usi:USI>
+  <usi:FirstName>FirstName</usi:FirstName>
+  <usi:FamilyName>FamilyName</usi:FamilyName>
+  <usi:SingleName>SingleName</usi:SingleName>
+  <usi:DateOfBirth>0001-01-01</usi:DateOfBirth>
+</usi:VerifyUSI>
