@@ -32,7 +32,7 @@ namespace Usi\Views;
                         Just apps. Lots of mother flipping apps.</p>
                 </header>
                 <span class="image">
-                    <img src="assets/images/usi.png" alt="Banner" />
+                    <img src="assets/css/images/usi.png" alt="Banner" />
                 </span>
             </div>
             <a href="#0" class="goto-next scrolly">Next</a>

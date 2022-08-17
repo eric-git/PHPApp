@@ -56,8 +56,7 @@ class ConfigurationManager
             $environmentDomXPath->evaluate("string(@url)", $envirommentElement),
             $environmentDomXPath->evaluate("string(@defaultOrgCode)", $envirommentElement),
             self::getStsSettings($environmentDomXPath),
-            self::getKeyStore($keyStoreDomXPath, $environmentDomXPath),
-            self::getProxySettings($environmentDomXPath)
+            self::getKeyStore($keyStoreDomXPath, $environmentDomXPath)
         );
 
         return $configuration;
@@ -109,24 +108,6 @@ class ConfigurationManager
         return $keyStore;
     }
 
-    private static function getProxySettings(DomXPath $environmentDomXPath): ?ProxySettings
-    {
-        $proxyElements = $environmentDomXPath->query("//usi:environment/usi:proxy");
-        if ($proxyElements->length === 0) {
-            return null;
-        }
-
-        $proxyElement = $proxyElements->item(0);
-        $proxySettings = new ProxySettings(
-            $environmentDomXPath->evaluate("string(@host)", $proxyElement),
-            intval($environmentDomXPath->evaluate("number(@port)", $proxyElement)),
-            $environmentDomXPath->evaluate("string(@username)", $proxyElement),
-            $environmentDomXPath->evaluate("string(@password)", $proxyElement)
-        );
-
-        return $proxySettings;
-    }
-
     private static function getEnvironmentDomXPath(string $containerPath): array
     {
         $environmentData = new DOMDocument();
@@ -155,38 +136,20 @@ class StsSettings
     }
 }
 
-class ProxySettings
-{
-    public readonly string $Host;
-    public readonly int $Port;
-    public readonly ?string $Username;
-    public readonly ?string $Password;
-
-    public function __construct(string $host, int $port, string $username = null, string $password = null)
-    {
-        $this->Host = $host;
-        $this->Port = $port;
-        $this->Username = $username;
-        $this->Password = $password;
-    }
-}
-
 class Configuration
 {
     public readonly string $Environment;
     public readonly StsSettings $Sts;
     public readonly string $UsiServiceUrl;
     public readonly string $DefaultOrgCode;
-    public readonly ?ProxySettings $Proxy;
     public readonly KeyStore $KeyStore;
 
-    public function __construct(string $environment, string $usiServiceUrl, string $defaultOrgCode, StsSettings $sts, KeyStore $keyStore, ProxySettings $proxy = null)
+    public function __construct(string $environment, string $usiServiceUrl, string $defaultOrgCode, StsSettings $sts, KeyStore $keyStore)
     {
         $this->Environment = $environment;
         $this->Sts = $sts;
         $this->UsiServiceUrl = $usiServiceUrl;
         $this->DefaultOrgCode = $defaultOrgCode;
-        $this->Proxy = $proxy;
         $this->KeyStore = $keyStore;
     }
 
