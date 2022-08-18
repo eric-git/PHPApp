@@ -23,21 +23,7 @@ abstract class BaseServiceClient
         $this->ServiceUrl = $serviceUrl;
         $this->OrgData = $orgKeyData;
         $wsdlUrl = $this->getWsdlUrl($serviceUrl);
-        $options = [];
-        if (isset($configuration->Proxy)) {
-            $options = [
-                "proxy_host" => $configuration->Proxy->Host,
-                "proxy_port" => $configuration->Proxy->Port
-            ];
-            if (isset($configuration->Proxy->Username)) {
-                $options = array_merge($options, [
-                    "proxy_login" => $configuration->Proxy->Username,
-                    "proxy_password" => $configuration->Proxy->Password
-                ]);
-            }
-        }
-
-        $this->ServiceClient = new SoapClient($wsdlUrl, $options);
+        $this->ServiceClient = new SoapClient($wsdlUrl);
     }
 
     protected function getWsdlUrl(): string

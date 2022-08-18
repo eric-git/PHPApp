@@ -60,15 +60,7 @@ namespace Usi\Views;
                                         <span class="col-6"></span>
                                     </dt>
                                     <dd>
-                                        <?php foreach ($settingsViewModel->ConfiguartionCollection as $configuration) {
-                                            $proxyUrl = "";
-                                            $proxyUserName = "";
-                                            if (isset($configuration->Proxy)) {
-                                                $proxyUrl = sprintf("%s:%d", $configuration->Proxy->Host, $configuration->Proxy->Port);
-                                                if (isset($configuration->Proxy->Username)) {
-                                                    $proxyUserName = $configuration->Proxy->Username;
-                                                }
-                                            } ?>
+                                        <?php foreach ($settingsViewModel->ConfiguartionCollection as $configuration) { ?>
                                             <dl id="env-<?= $configuration->Environment ?>" class="row" style="display: none;">
                                                 <dt class="col-3">USI Service URL</dt>
                                                 <dd class="col-9"><?= htmlentities($configuration->UsiServiceUrl) ?></dd>
@@ -78,10 +70,6 @@ namespace Usi\Views;
                                                 <dd class="col-9"><?= htmlentities($configuration->Sts->IssuerUrl) ?></dd>
                                                 <dt class="col-3">Applies To</dt>
                                                 <dd class="col-9"><?= htmlentities($configuration->Sts->AppliesTo) ?></dd>
-                                                <dt class="col-3">Proxy</dt>
-                                                <dd class="col-9"><?= htmlentities($proxyUrl) ?></dd>
-                                                <dt class="col-3">Proxy Credential</dt>
-                                                <dd class="col-9"><?= htmlentities($proxyUserName) ?></dd>
                                             </dl>
                                         <?php } ?>
                                     </dd>

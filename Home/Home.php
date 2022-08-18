@@ -32,7 +32,7 @@ namespace Usi\Views;
                         Just apps. Lots of mother flipping apps.</p>
                 </header>
                 <span class="image">
-                    <img src="assets/images/usi.png" alt="Banner" />
+                    <img src="assets/css/images/usi.png" alt="Banner" />
                 </span>
             </div>
             <a href="#0" class="goto-next scrolly">Next</a>
@@ -46,20 +46,20 @@ namespace Usi\Views;
         ?>
             <section id="<?= strval($counter) ?>" class="spotlight <?= $counter % 2 === 0 ? "right" : "left"; ?>">
                 <div class="image fit main">
-                    <img src="<?= $section->Background; ?>" alt="<?= htmlentities($section->Title); ?>" />
+                    <img src="<?= $section->Background ?>" alt="<?= htmlentities($section->Title) ?>" />
                 </div>
                 <div class="content">
                     <header>
-                        <h2><?= htmlentities($section->Title); ?></h2>
-                        <p><?= htmlentities($section->SubTitle); ?></p>
+                        <h2><?= htmlentities($section->Title) ?></h2>
+                        <p><?= htmlentities($section->SubTitle) ?></p>
                     </header>
-                    <p><?= htmlentities($section->Description); ?></p>
+                    <p><?= $section->Description ?></p>
                     <ul class="actions">
-                        <li><a class="button" href="/<?= $section->ActionViewName ?>"><?= htmlentities($section->ActionText); ?></a></li>
+                        <li><a class="button" href="/<?= $section->ActionViewName ?>"><?= htmlentities($section->ActionText) ?></a></li>
                     </ul>
                     <?php
                     if ($counter + 1 < $numberOfSections) { ?>
-                        <a href="#<?= strval($counter + 1); ?>" class="goto-next scrolly">Next</a>
+                        <a href="#<?= strval($counter + 1) ?>" class="goto-next scrolly">Next</a>
                     <?php } ?>
                 </div>
             </section>
@@ -71,6 +71,7 @@ namespace Usi\Views;
 
     <!-- Scripts -->
     <?php require_once(sprintf("%s/Shared/Scripts.php", $_SERVER["DOCUMENT_ROOT"])); ?>
+    <script src="/assets/js/home.js"></script>
 </body>
 
 </html>

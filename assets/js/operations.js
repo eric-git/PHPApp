@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $(".stack .button").click(function (e) {
         e.preventDefault();
-        if ($(this).hasClass("disabled")) {
+        if ($(this).hasClass("disabled") || $(this).hasClass("primary")) {
             return;
         }
 
@@ -16,7 +16,7 @@ $(document).ready(function () {
             return;
         }
 
-        var operation = getCurrentOperation();
+        var operation = $(".stack .button.primary").text();
         var xml = $("script[id='" + operation + "']").text();
         $(":hidden[name='param_0']").val(operation);
         $("#txtData").val(xml);
@@ -48,7 +48,3 @@ $(document).ready(function () {
 
     $(".stack .button:first").click();
 });
-
-function getCurrentOperation() {
-    return $(".stack .button.primary").text();
-}

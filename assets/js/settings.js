@@ -18,7 +18,7 @@ $(document).ready(function () {
 
     $("#btnSubmit").click(function (e) {
         e.preventDefault();
-        if ($(this).hasClass("disabled")) {
+        if ($(this).hasClass("disabled") || $(this).hasClass("primary")) {
             return;
         }
 
