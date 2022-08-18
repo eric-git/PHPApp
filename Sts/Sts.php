@@ -33,13 +33,13 @@ namespace Usi\Views;
                                 <h3>Request</h3>
                                 <a id="btnSubmit" href="#" class="button">Refresh</a>
                             </summary>
-                            <pre><code id="txtRequest" class="language-xml"><?= \htmlentities($stsViewModel->RequestXml) ?></code></pre>
+                            <pre><code id="txtRequest" class="language-xml"><?= htmlentities($stsViewModel->RequestXml) ?></code></pre>
                         </details>
                         <details open>
                             <summary>
                                 <h3>Response</h3>
                             </summary>
-                            <pre><code id="txtResponse" class="language-xml"><?= \htmlentities($stsViewModel->ResponseXml) ?></code></pre>
+                            <pre><code id="txtResponse" class="language-xml"><?= htmlentities($stsViewModel->ResponseXml) ?></code></pre>
                         </details>
                     </div>
                 </div>
