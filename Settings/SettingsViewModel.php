@@ -7,7 +7,7 @@ namespace Usi\Models;
 require_once(sprintf("%s/Infrastructure/BaseViewModel.php", $_SERVER["DOCUMENT_ROOT"]));
 require_once(sprintf("%s/Infrastructure/ConfigurationManager.php", $_SERVER["DOCUMENT_ROOT"]));
 
-use Usi\Infrastructure\ConfigurationCollection;
+use Usi\Configuration\ConfigurationCollection;
 
 class SettingsViewModel extends BaseViewModel
 {

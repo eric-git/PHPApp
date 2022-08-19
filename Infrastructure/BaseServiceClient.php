@@ -2,13 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Usi\Infrastructure;
+namespace Usi\ServiceClients;
+
+require_once(sprintf("%s/Infrastructure/ConfigurationManager.php", $_SERVER["DOCUMENT_ROOT"]));
 
 use DateTime;
 use DateTimeZone;
 use SoapClient;
 use DOMDocument;
 use DOMXPath;
+use Usi\Configuration\Configuration;
+use Usi\Configuration\OrgKeyData;
 
 abstract class BaseServiceClient
 {
@@ -61,10 +65,10 @@ abstract class BaseServiceClient
         return base64_encode($hash);
     }
 
-    protected static function getGuidv4(): string
+    protected static function getGuidV4(): string
     {
-        if (function_exists('com_create_guid')) {
-            return trim(com_create_guid(), '{}');
+        if (function_exists("com_create_guid")) {
+            return trim(com_create_guid(), "{}");
         }
 
         $data = openssl_random_pseudo_bytes(16);
