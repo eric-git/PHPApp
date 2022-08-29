@@ -128,7 +128,7 @@ namespace Usi\Views;
                             </form>
                         </div>
                         <div class="row" style="margin: initial; flex: auto;">
-                            <iframe id="info" class="box col-12" src="/phpinfo.php" style="display: none; height: 60vh; padding: initial;"></iframe>
+                            <iframe id="info" class="box col-12" src="/PHPInfo.php" style="display: none; height: 60vh; padding: initial;"></iframe>
                         </div>
                     </div>
                 </div>

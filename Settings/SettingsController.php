@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Usi\Controllers;
 
 require_once(sprintf("%s/Infrastructure/BaseController.php", $_SERVER["DOCUMENT_ROOT"]));
-require_once(sprintf("%s/Infrastructure/ConfigurationManager.php", $_SERVER["DOCUMENT_ROOT"]));
 require_once(sprintf("%s/Settings/SettingsViewModel.php", $_SERVER["DOCUMENT_ROOT"]));
 
-use Usi\Infrastructure\ConfigurationManager;
+use Usi\Configuration\ConfigurationManager;
 use Usi\Models\SettingsViewModel;
 
 class SettingsController extends BaseController

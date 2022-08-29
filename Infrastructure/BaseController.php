@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Usi\Controllers;
 
 require_once(sprintf("%s/Infrastructure/Session.php", $_SERVER["DOCUMENT_ROOT"]));
-require_once(sprintf("%s/Infrastructure/ConfigurationManager.php", $_SERVER["DOCUMENT_ROOT"]));
 
 use DOMDocument;
 use XSLTProcessor;
-use Usi\Infrastructure\Configuration;
-use Usi\Infrastructure\ConfigurationManager;
-use Usi\Infrastructure\OrgKeyData;
+use Usi\Configuration\Configuration;
+use Usi\Configuration\ConfigurationManager;
+use Usi\Configuration\OrgKeyData;
 
 abstract class BaseController
 {

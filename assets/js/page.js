@@ -3,7 +3,7 @@ function convertToHtml(xml) {
 }
 
 $.ajaxSetup({
-    url: "/ajax/",
+    url: "/Ajax/",
     type: "POST",
     dataType: "json"
 });

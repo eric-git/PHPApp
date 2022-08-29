@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Usi\Controllers;
 
 require_once(sprintf("%s/Infrastructure/BaseController.php", $_SERVER["DOCUMENT_ROOT"]));
-require_once(sprintf("%s/Infrastructure/UsiServiceClient.php", $_SERVER["DOCUMENT_ROOT"]));
+require_once(sprintf("%s/ServiceClients/UsiServiceClient.php", $_SERVER["DOCUMENT_ROOT"]));
 require_once(sprintf("%s/Wsdl/WsdlViewModel.php", $_SERVER["DOCUMENT_ROOT"]));
 
 use Usi\Models\WsdlViewModel;
-use Usi\Infrastructure\UsiServiceClient;
+use Usi\ServiceClients\UsiServiceClient;
 
 class WsdlController extends BaseController
 {

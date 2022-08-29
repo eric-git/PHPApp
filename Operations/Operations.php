@@ -47,7 +47,7 @@ namespace Usi\Views;
                                     <textarea id="txtData" name="param_1" rows="8" style="resize: none; flex-basis: 100%;"></textarea>
                                 </form>
                             </details>
-                            <details>
+                            <details open>
                                 <summary>
                                     <h3>Request</h3>
                                 </summary>

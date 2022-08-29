@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Usi\Controllers;
 
 require_once(sprintf("%s/Infrastructure/BaseController.php", $_SERVER["DOCUMENT_ROOT"]));
-require_once(sprintf("%s/Infrastructure/StsServiceClient.php", $_SERVER["DOCUMENT_ROOT"]));
+require_once(sprintf("%s/ServiceClients/StsServiceClient.php", $_SERVER["DOCUMENT_ROOT"]));
 require_once(sprintf("%s/Sts/StsViewModel.php", $_SERVER["DOCUMENT_ROOT"]));
 
 use Usi\Models\StsViewModel;
-use Usi\Infrastructure\StsServiceClient;
+use Usi\ServiceClients\StsServiceClient;
 
 class StsController extends BaseController
 {

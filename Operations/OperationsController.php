@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Usi\Controllers;
 
 require_once(sprintf("%s/Infrastructure/BaseController.php", $_SERVER["DOCUMENT_ROOT"]));
-require_once(sprintf("%s/Infrastructure/UsiServiceClient.php", $_SERVER["DOCUMENT_ROOT"]));
+require_once(sprintf("%s/ServiceClients/UsiServiceClient.php", $_SERVER["DOCUMENT_ROOT"]));
 require_once(sprintf("%s/Operations/OperationsViewModel.php", $_SERVER["DOCUMENT_ROOT"]));
 
 use DOMDocument;
 use DOMNodeList;
 use DOMXPath;
-use Usi\Infrastructure\UsiServiceClient;
+use Usi\ServiceClients\UsiServiceClient;
 use Usi\Models\OperationsViewModel;
 use Usi\Models\Operation;
 use Usi\Models\OperationCollection;

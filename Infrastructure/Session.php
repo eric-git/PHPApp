@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Usi\Infrastructure;
+namespace Usi\Configuration;
 
 require_once(sprintf("%s/Infrastructure/ConfigurationManager.php", $_SERVER["DOCUMENT_ROOT"]));
 
