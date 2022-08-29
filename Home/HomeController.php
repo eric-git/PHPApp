@@ -34,7 +34,7 @@ class HomeController extends BaseController
                 Therefore, the service client needs to be updated to supply correct SOAP requests.",
                 "https://images.pexels.com/photos/532173/pexels-photo-532173.jpeg",
                 "View WSDL",
-                "wsdl"
+                "Wsdl"
             ),
             new Section(
                 "Federation Authentication & STS",
@@ -44,7 +44,7 @@ class HomeController extends BaseController
                 header of each request and will be used to authenticate users on our service side.",
                 "https://images.pexels.com/photos/272980/pexels-photo-272980.jpeg",
                 "Test STS",
-                "sts"
+                "Sts"
             ),
             new Section(
                 "USI Service",
@@ -55,7 +55,7 @@ class HomeController extends BaseController
                 <code class=\"language-xml\">&lt;wsdl:portType&gt;</code> element for service operations.",
                 "https://images.pexels.com/photos/12708081/pexels-photo-12708081.jpeg",
                 "Test Operations",
-                "operations"
+                "Operations"
             )
         );
 
