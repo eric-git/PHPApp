@@ -127,8 +127,12 @@ namespace Usi\Views;
                                 </dl>
                             </form>
                         </div>
-                        <div class="row" style="margin: initial; flex: auto;">
-                            <iframe id="info" class="box col-12" src="/Utility/PHPInfo.php" style="display: none; height: 60vh; padding: initial;"></iframe>
+                        <div id="info" class="row" style="margin: initial; flex: auto; display: none;">
+                            <p>
+                                <i class="icon solid fa-circle-info"></i>
+                                <em>Please manually open hyperlinks in the document in a new tab as they may not work on the page.</em>
+                            </p>
+                            <iframe class="box col-12" src="/Utility/PHPInfo.php" style="height: 60vh; padding: initial;"></iframe>
                         </div>
                     </div>
                 </div>
