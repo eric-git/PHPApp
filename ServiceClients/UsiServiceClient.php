@@ -11,7 +11,7 @@ require_once(sprintf("%s/ServiceClients/StsServiceClient.php", $_SERVER["DOCUMEN
 use DateTime;
 use DateTimeZone;
 use DateInterval;
-use usi\Configuration\Configuration;
+use Usi\Configuration\Configuration;
 use Usi\Configuration\OrgKeyData;
 
 class UsiServiceClient extends BaseServiceClient

@@ -57,3 +57,26 @@ summary h3 {
     row-gap: 2em;
     text-align: initial;
 }
+
+.error-container {
+    display: flex;
+    flex-wrap: wrap;
+    line-height: initial;
+    flex-direction: row;
+    flex-basis: 100%;
+    column-gap: 2em;
+    align-items: center;
+    font-weight: bold;
+    font-size: xx-large;
+    margin: initial;
+}
+
+.error-container :first-child {
+    flex-grow: 1;
+    color: #e44c65;
+}
+
+.error-container :last-child {
+    flex-grow: 1;
+    text-align: initial;
+}

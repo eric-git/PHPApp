@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Usi\Controllers;
 
+require_once(sprintf("%s/Infrastructure/Error.php", $_SERVER["DOCUMENT_ROOT"]));
 require_once(sprintf("%s/Infrastructure/Session.php", $_SERVER["DOCUMENT_ROOT"]));
 
 use DOMDocument;

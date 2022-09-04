@@ -11,7 +11,8 @@ $(document).ready(function () {
         $("#key-" + $("#cbEnvironment").val() + "-" + $(this).val()).show();
     });
 
-    $("#btnReset").click(function () {
+    $("#btnReset").click(function (e) {
+        e.preventDefault();
         var environmentComboBox = $("#cbEnvironment");
         environmentComboBox.val($("option[data-current='true']", environmentComboBox).val() || $("option:first", environmentComboBox).val()).change();
     });
@@ -43,7 +44,8 @@ $(document).ready(function () {
         });
     });
 
-    $("aside [data-section]").click(function () {
+    $("aside [data-section]").click(function (e) {
+        e.preventDefault();
         $(this).addClass("primary").siblings().removeClass("primary");
         $("aside [data-section]").each(function () {
             $("#" + $(this).data("section")).toggle($(this).hasClass("primary"));

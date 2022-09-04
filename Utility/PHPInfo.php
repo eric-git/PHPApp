@@ -2,6 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Usi;
+namespace Usi\Views;
 
 phpinfo();
