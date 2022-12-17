@@ -1,0 +1,2 @@
+- Cert password: Password1!
+- Supports Windows (PowerShell) & Linux (Bash)
