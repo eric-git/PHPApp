@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "streetsidesoftware.code-spell-checker",
+        "esbenp.prettier-vscode",
+        "xdebug.php-debug",
+        "bmewburn.vscode-intelephense-client"
+    ]
+}
