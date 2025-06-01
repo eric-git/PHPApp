@@ -8,15 +8,17 @@ This application is a simple PHP implementation to help users of USI system to a
 
 ## Prerequisites
 
-- Install PHP
-- Update php.ini using [the settings](./php-settings.ini) provided
+- Ensure PHP has been installed
 - For Windows OS:
+  - Ensure IIS feature has been enabled
   - Enable [CGI feature](https://learn.microsoft.com/en-us/iis/configuration/system.webserver/cgi)
   - Install [URL Rewrite module](https://www.iis.net/downloads/microsoft/url-rewrite) on IIS
   - Install [PowerShell 7+](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4)
+  - Update php.ini using [the settings](./php-settings-windows.ini) provided
 - For Debian based Linux OS:
   - Ensure the [Apache](https://httpd.apache.org/) package is installed
   - Ensure PHP and Apache has been setup
+  - Update php.ini using [the settings](./php-settings-debian.ini) provided
 
 ## Local development setup on Windows OS
 
