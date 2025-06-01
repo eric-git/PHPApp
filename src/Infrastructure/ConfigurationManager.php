@@ -26,6 +26,7 @@ class ConfigurationManager
                 return $configuration;
             }
         }
+        throw new \Exception("Configuration for environment '{$environment}' not found.");
     }
 
     private static function initialize(): void
@@ -229,9 +230,9 @@ class Configuration
         foreach ($this->KeyStore->Credentials as $credential) {
             if (strcasecmp($credential->Code, $orgCode) === 0) {
                 return $credential;
-                break;
             }
         }
+        throw new \Exception("OrgKeyData for orgCode '{$orgCode}' not found.");
     }
 }
 
