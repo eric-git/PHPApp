@@ -13,12 +13,12 @@
 .EXAMPLE
     .\setup-local-windows.ps1 -sitePhysicalPath "C:\developer\Repos\PHPApp\src" -phpInstallationPath "C:\developer\php"
 #>
+using namespace System.Security.Cryptography.X509Certificates
 [CmdletBinding()]
 param(
     [Parameter(Mandatory, HelpMessage = "Site physical path")]
     [string]
     $sitePhysicalPath,
-
     [Parameter(HelpMessage = "PHP installation path, default is C:\PHP")]
     [string]
     $phpInstallationPath = "C:\PHP"
@@ -26,16 +26,18 @@ param(
 begin {
     Write-Host "Preparing..."
     #Requires -RunAsAdministrator
+    #Requires -Version 7.0
+    #requires -Module IISAdministration
     $ErrorActionPreference = "Stop"
     if (-not (Test-Path -Path $sitePhysicalPath)) {
         Write-Error "Site physical path not found"
     }
     if ($null -eq $phpInstallationPath) {
         $envPath = $env:Path
-        If ($null -ne $envPath) {
+        if ($null -ne $envPath) {
             foreach ($pathFromEnv in @($envPath.Split([System.IO.Path]::PathSeparator))) {
                 $executablePath = Join-Path $pathFromEnv "php.exe"
-                If (Test-Path `
+                if (Test-Path `
                         -Path $executablePath `
                         -PathType Leaf) {
                     $phpInstallationPath = $pathFromEnv
@@ -77,16 +79,34 @@ process {
     }
 
     Write-Host "Setting up SSL certificate..."
-    Get-ChildItem -Path Cert:\LocalMachine\My | Where-Object {
-        $_.Subject -eq "CN=$siteUrl"
-    } | Remove-Item
+    foreach ($storeName in "My", "Root", "WebHosting") {
+        $store = New-Object X509Store($storeName, "LocalMachine")
+        $store.Open("ReadWrite")
+        $store.Certificates | Where-Object {
+            $_.Subject -eq "CN=$siteUrl"
+        } | ForEach-Object {
+            $store.Remove($_)
+        }
+        $store.Close()
+    }
     $certificate = New-SelfSignedCertificate `
         -Subject $siteUrl `
         -DnsName $siteUrl `
         -CertStoreLocation Cert:\LocalMachine\My `
         -NotAfter (Get-Date).AddYears(10)
+    foreach ($storeName in "My", "Root", "WebHosting") {
+        $store = New-Object X509Store($storeName, "LocalMachine")
+        $store.Open("ReadWrite")
+        if ($storeName -eq "My") {
+            $store.Remove($certificate)
+        }
+        else {
+            $store.Add($certificate)
+        }
+        $store.Close()
+    }
 
-    Write-Host "Setting up app pool..."
+    Write-Host "Setting up app pool and site..."
     $site = $server.Sites[$siteName]
     if ($null -ne $site) {
         $server.Sites.Remove($site)
@@ -96,9 +116,7 @@ process {
         $server.ApplicationPools.Remove($appPool)
     }
     $appPool = $server.ApplicationPools.Add($siteName)
-
-    Write-Host "Setting up site..."
-    $site = $server.Sites.Add($siteName, "*:443:$siteUrl", $sitePhysicalPath, $certificate.GetCertHash(), "My")
+    $site = $server.Sites.Add($siteName, "*:443:$siteUrl", $sitePhysicalPath, $certificate.GetCertHash(), "WebHosting")
     $site.ApplicationDefaults.ApplicationPoolName = $appPool.Name
 
     Write-Host "Setting up FastCGI..."
@@ -143,4 +161,8 @@ process {
             -Encoding UTF8 `
             -Value "`r`n`t127.0.0.1`t$siteUrl"
     }
+    & ipconfig /flushdns | Out-Null
+}
+end {
+    Write-Host "Setup completed."
 }
