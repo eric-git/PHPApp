@@ -3,13 +3,18 @@ set -e
 
 # Check if the system is Debian-based
 if [[ ! -f /etc/debian_version ]]; then
-  echo "This is not a Debian-based system. Exiting..."
+  echo -e "This is not a Debian-based system. Exiting..."
   exit 1
+fi
+
+if [ "$(id -u)" -ne 0 ]; then
+    echo -e "Please run as root (use sudo)."
+    exit 1
 fi
 
 # Check if Apache is installed
 if ! dpkg-query -W -f='${Status}' apache2 2>/dev/null | grep -q "install ok installed"; then
-  echo "Apache is not installed. Please install Apache before running this script."
+  echo -e "Apache is not installed. Please install Apache before running this script."
   exit 1
 fi
 
@@ -27,48 +32,41 @@ CERT_DIR="/etc/ssl/$DOMAIN"
 CONFIG_FILE="/etc/apache2/sites-available/$DOMAIN.conf"
 TMP_CONFIG_FILE="/tmp/$DOMAIN.conf"
 
-install_or_upgrade_package() {
-  local package=$1
-  echo -e "${GREEN}Installing or upgrading $package...${NC}"
-  sudo apt-get install -y $package > /dev/null 2>&1
-}
+# Install required packages
+echo -e "${GREEN}Installing required packages...${NC}"
+sudo apt-get install -y \
+      openssl \
+      php-soap \
+      php-xsl \
+      php-xdebug
 
-# Install or upgrade required packages
-install_or_upgrade_package "openssl"
-install_or_upgrade_package "php-soap"
-install_or_upgrade_package "php-xsl"
-install_or_upgrade_package "php-xdebug"
-
-enable_module() {
-  local module=$1
-  if ! apache2ctl -M | grep -q "${module}_module"; then
-    echo -e "${GREEN}Enabling $module...${NC}"
-    sudo a2enmod $module
-  fi
-}
-
-# Check and enable mod_rewrite, mod_dir, and mod_deflate
-enable_module "rewrite"
-enable_module "dir"
-enable_module "deflate"
+# Enable required modules
+echo -e "${GREEN}Enabling required modules...${NC}"
+sudo a2enmod \
+      rewrite \
+      dir \
+      deflate \
+      ssl
 
 # Create SSL certificate
+echo -e "${GREEN}Creating SSL certificate...${NC}"
 mkdir -p $CERT_DIR
 sudo openssl genpkey \
   -algorithm RSA \
-  -out $CERT_DIR/$DOMAIN.key \
-  > /dev/null 2>&1
+  -out $CERT_DIR/$DOMAIN.key
 sudo openssl req \
   -new \
   -x509 \
   -key $CERT_DIR/$DOMAIN.key \
   -out $CERT_DIR/$DOMAIN.crt \
   -days 3650 \
-  -subj "/C=US/ST=State/L=City/O=Organization/OU=Department/CN=$DOMAIN" \
-  > /dev/null 2>&1
-echo -e "${GREEN}SSL certificate and key have been generated and saved to $CERT_DIR${NC}"
+  -subj "/C=AU/ST=State/L=City/O=Organization/OU=Department/CN=$DOMAIN" \
+  -addext "subjectAltName=DNS:$DOMAIN"
+sudo cp $CERT_DIR/$DOMAIN.crt /usr/local/share/ca-certificates/$DOMAIN.crt
+sudo update-ca-certificates --fresh
 
 # Create the Web site's apache conf
+echo -e "${GREEN}Updating Apache configuration...${NC}"
 cat <<EOL > $TMP_CONFIG_FILE
 ServerName localhost
 <VirtualHost 127.0.0.1:80>
@@ -120,14 +118,14 @@ ServerName localhost
 </VirtualHost>
 EOL
 sudo mv $TMP_CONFIG_FILE $CONFIG_FILE
-echo -e "${GREEN}Apache configuration with SSL and HTTP to HTTPS redirection has been generated and saved to $CONFIG_FILE${NC}"
 
 # Add entry to /etc/hosts if not already present
-if ! grep -q "127.0.0.1 www.$DOMAIN" /etc/hosts; then
-  echo "127.0.0.1 www.$DOMAIN" | sudo tee -a /etc/hosts
-  echo -e "${GREEN}Entry added to /etc/hosts${NC}"
+echo -e "${GREEN}Updating hosts...${NC}"
+if ! grep -qw "www.${DOMAIN}" /etc/hosts; then
+    echo "127.0.0.1 www.${DOMAIN}" | sudo tee -a /etc/hosts
 fi
 
 # Enable the site
-sudo a2ensite $DOMAIN.conf > /dev/null 2>&1
-sudo systemctl restart apache2 > /dev/null 2>&1
+echo -e "${GREEN}Enabling the site...${NC}"
+sudo a2ensite $DOMAIN.conf
+sudo systemctl restart apache2

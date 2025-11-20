@@ -100,6 +100,7 @@ class ConfigurationManager
             $orgKeyData->PublicCertificate = $keyStoreDomXPath->evaluate("string(ato:publicCertificate)", $element);
             $orgKeyData->ProtectedPrivateKey = $keyStoreDomXPath->evaluate("string(ato:protectedPrivateKey)", $element);
             $orgKeyData->PrivateKeyPassword = $environmentDomXPath->evaluate("string(@privateKeyPassword)", $mappingElement);
+            $orgKeyData->SecondPartyAbn = $environmentDomXPath->evaluate("string(@secondPartyAbn)", $mappingElement);
             $keyStore->Credentials[$counter] = $orgKeyData;
             $counter++;
         }
@@ -161,6 +162,7 @@ class OrgKeyData
     public string $IntegrityValue;
     public string $CredentialType;
     public string $PrivateKeyPassword;
+    public string $SecondPartyAbn;
 }
 
 class OrgKeyDataCollection implements ArrayAccess, IteratorAggregate, Countable

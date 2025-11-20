@@ -22,7 +22,8 @@ class StsServiceClient extends BaseServiceClient
     public function issue(): array
     {
         // build request
-        $xml = file_get_contents(sprintf("%s/assets/templates/sts-request-template.xml", $_SERVER["DOCUMENT_ROOT"]));
+        $templateFile = empty($this->OrgData->SecondPartyAbn) ? "sts-request-template.xml" : "sts-on-behalf-of-request-template.xml";
+        $xml = file_get_contents(sprintf("%s/assets/templates/%s", $_SERVER["DOCUMENT_ROOT"], $templateFile));
         [$requestDocument, $requestXPath] = parent::getDomXPath($xml);
 
         // header
@@ -96,6 +97,26 @@ class StsServiceClient extends BaseServiceClient
         $expires = $created->add(DateInterval::createFromDateString("1 day"));
         $trustExpiresElement = $requestXPath->query("trust:Lifetime/wsu:Expires", $requestSecurityTokenElement)->item(0);
         $trustExpiresElement->nodeValue = parent::GetXmlUTCDateTime($expires);
+
+        if (!empty($this->OrgData->SecondPartyAbn)) {
+            $relationshipTokenElement = $requestXPath->query("trust2008:ActAs/v13:RelationshipToken", $requestSecurityTokenElement)->item(0);
+
+            // @ID
+            $idAttribute = $requestXPath->query("@v13:ID", $relationshipTokenElement)->item(0);
+            $idAttribute->nodeValue = parent::getGuidV4();
+
+            // <v13:Relationship>/<v13:Attribute> @v13:Value
+            $ssidValueAttribute = $requestXPath->query("v13:Relationship/v13:Attribute[@v13:Name='SSID']/@v13:Value", $relationshipTokenElement)->item(0);
+            $ssidValueAttribute->nodeValue = "0000123400";
+
+            // <v13:FirstParty> @Value
+            $firstPartyValueAttribute = $requestXPath->query("v13:FirstParty/@v13:Value", $relationshipTokenElement)->item(0);
+            $firstPartyValueAttribute->nodeValue = $this->OrgData->ABN;
+            
+            // <v13:SecondParty> @Value
+            $secondPartyValueAttribute = $requestXPath->query("v13:SecondParty/@v13:Value", $relationshipTokenElement)->item(0);
+            $secondPartyValueAttribute->nodeValue = $this->OrgData->SecondPartyAbn;
+        }
 
         $request = $requestDocument->saveXML();
         $response = $this->ServiceClient->__doRequest($request, $this->ServiceUrl, "", SOAP_1_2);
