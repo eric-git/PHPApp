@@ -50,6 +50,8 @@ abstract class BaseServiceClient
         $xpath->registerNamespace("wsp", "http://schemas.xmlsoap.org/ws/2004/09/policy");
         $xpath->registerNamespace("i", "http://schemas.xmlsoap.org/ws/2005/05/identity");
         $xpath->registerNamespace("wsu", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd");
+        $xpath->registerNamespace("trust2008", "http://docs.oasis-open.org/ws-sx/ws-trust/200802");
+        $xpath->registerNamespace("v13", "http://vanguard.business.gov.au/2016/03");
         $xpath->registerNamespace("xenc", "http://www.w3.org/2001/04/xmlenc#");
         $xpath->registerNamespace("saml", "urn:oasis:names:tc:SAML:2.0:assertion");
         $xpath->registerNamespace("k", "http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd");

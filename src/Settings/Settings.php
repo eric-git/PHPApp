@@ -94,6 +94,8 @@ namespace Usi\Views;
                                                     <dd class="col-9"><?= htmlentities($orgKeyData->Id) ?></dd>
                                                     <dt class="col-3">Code</dt>
                                                     <dd class="col-9"><?= htmlentities($orgKeyData->Code) ?></dd>
+                                                    <dt class="col-3">ABN</dt>
+                                                    <dd class="col-9"><?= htmlentities($orgKeyData->ABN) ?></dd>
                                                     <dt class="col-3">Name1</dt>
                                                     <dd class="col-9"><?= htmlentities($orgKeyData->Name1) ?></dd>
                                                     <dt class="col-3">Name2</dt>
@@ -120,6 +122,8 @@ namespace Usi\Views;
                                                     <dd class="col-9"><?= htmlentities($orgKeyData->CredentialType) ?></dd>
                                                     <dt class="col-3">SHA1 Fingerprint</dt>
                                                     <dd class="col-9"><?= htmlentities($orgKeyData->Sha1fingerprint) ?></dd>
+                                                    <dt class="col-3">Second Party ABN</dt>
+                                                    <dd class="col-9"><?= htmlentities($orgKeyData->SecondPartyAbn) ?></dd>
                                                 </dl>
                                             <?php } ?>
                                         </dd>
