@@ -57,27 +57,11 @@ begin {
     Import-Module IISAdministration
     $server = Get-IISServerManager
     $siteName = "usi-php-app"
-    $siteUrl = "www.usiphp.net"
+    $siteUrl = "windows.usiphp.net"
+    $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+    $iniSourcePath = Join-Path $scriptDir "php-settings-windows.ini"
 }
 process {
-    Write-Host "Setting up PHP..."
-    @(
-        "usr",
-        "sys-tmp",
-        "upload-tmp",
-        "session",
-        "wsdl-cache",
-        "xdebug"
-    ) | ForEach-Object {
-        $path = Join-Path `
-            -Path $phpInstallationPath `
-            -ChildPath $_
-        New-Item `
-            -ItemType Directory `
-            -Path $path `
-            -Force | Out-Null
-    }
-
     Write-Host "Setting up SSL certificate..."
     foreach ($storeName in "My", "Root", "WebHosting") {
         $store = New-Object X509Store($storeName, "LocalMachine")
@@ -120,6 +104,16 @@ process {
     $site.ApplicationDefaults.ApplicationPoolName = $appPool.Name
 
     Write-Host "Setting up FastCGI..."
+    $confDir = Join-Path `
+        -Path $phpInstallationPath `
+        -ChildPath "conf.d"
+    if (-not (Test-Path -Path $confDir)) {
+        New-Item `
+            -Path $confDir `
+            -ItemType Directory | Out-Null
+    }
+    $targetIni = Join-Path $confDir "99-$siteUrl.ini"
+    Copy-Item -Path $iniSourcePath -Destination $targetIni -Force
     $fullPath = Join-Path `
         -Path $phpInstallationPath `
         -ChildPath "php-cgi.exe"
@@ -145,6 +139,10 @@ process {
     $environmentVariableElement = $environmentVariablesCollection.CreateElement("environmentVariable")
     $environmentVariableElement["name"] = "PHPRC"
     $environmentVariableElement["value"] = Join-Path $phpInstallationPath "php.ini"
+    $envVar = $environmentVariablesCollection.CreateElement("environmentVariable")
+    $envVar["name"] = "PHP_INI_SCAN_DIR"
+    $envVar["value"] = $confDir
+    $environmentVariablesCollection.Add($envVar) | Out-Null
     $environmentVariablesCollection.Add($environmentVariableElement) | Out-Null
     $fastCgiCollection.Add($applicationElement) | Out-Null
     $server.CommitChanges()

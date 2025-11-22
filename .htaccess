@@ -6,8 +6,8 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
 # CanonicalHostNameRule
-RewriteCond %{HTTP_HOST} !^www\.usiphp\.net$ [NC]
-RewriteRule ^(.*)$ https://www.usiphp.net/$1 [R=301,L]
+#RewriteCond %{HTTP_HOST} !^linux\.usiphp\.net$ [NC]
+#RewriteRule ^(.*)$ https://linux.usiphp.net/$1 [R=301,L]
 
 # ErrorsRedirect
 RewriteCond %{REQUEST_URI} ^/error/(\d{3})$
