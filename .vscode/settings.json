@@ -27,6 +27,7 @@
         "genpkey",
         "httponly",
         "iisstart",
+        "initialise",
         "Licence",
         "nowrap",
         "ONLYDIR",

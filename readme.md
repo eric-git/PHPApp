@@ -26,15 +26,16 @@ You may setup the project on a Windows PC using IIS. Please run [setup-local-win
   ```powershell
   Get-Help ".\setup-local-windows.ps1" -Full
   ```
-- XDebug Windows binaries can be downloaded [here](https://xdebug.org/download). Please place the binary under `<PHP installation folder>\ext`, and rename it to `php_xdebug.dll`
-- Ensure the attribute `scriptProcessor` for FastCgiModule points to the actual PHP installation path in web.config. By default, it is C:\PHP\php-cgi.exe.
+- XDebug Windows binaries can be downloaded [here](https://xdebug.org/download). Please place the binary under `<PHP installation directory>\ext`, and rename it to `php_xdebug.dll`
+- Ensure the attribute `scriptProcessor` for FastCgiModule points to the actual PHP installation path in [web.config](src/web.config). By default, it is C:\PHP\php-cgi.exe.
 
 ## Local development setup on Debian-based Linux OS
 
 You may setup the project on a Debian-based Linux OS, Please run [setup-local-debian.sh](deployment/setup-local-debian.sh) to setup your local development environment.
 
 ```sh
-sudo ./setup-local-debian.sh "path/to/src/folder/of/the/project"
+# parameter "path/to/src/directory/of/the/project" is optional, default is <script file directory path>/../src
+sudo ./setup-local-debian.sh "path/to/src/directory/of/the/project"
 ```
 
 ## Issues

@@ -8,15 +8,16 @@
 .LINK
     www.usi.gov.au
 .EXAMPLE
-    .\setup-local-windows.ps1 -sitePhysicalPath "D:\MyFiles\Development\PHPApp\src"
+    .\setup-local-windows.ps1
     This is using the default installation path "C:\PHP". Or you are not sure where PHP is installed, the function will find it out for you.
+    This is using the default site physical path ..\src relative to this script.
 .EXAMPLE
     .\setup-local-windows.ps1 -sitePhysicalPath "C:\developer\Repos\PHPApp\src" -phpInstallationPath "C:\developer\php"
 #>
 using namespace System.Security.Cryptography.X509Certificates
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory, HelpMessage = "Site physical path")]
+    [Parameter(HelpMessage = "Site physical path, default is ..\src relative to this script")]
     [string]
     $sitePhysicalPath,
     [Parameter(HelpMessage = "PHP installation path, default is C:\PHP")]
@@ -24,13 +25,19 @@ param(
     $phpInstallationPath = "C:\PHP"
 )
 begin {
-    Write-Host "Preparing..."
+    $GREEN = "`e[32m"
+    $NC = "`e[0m"
+    Write-Host "${GREEN}Preparing...${NC}"
     #Requires -RunAsAdministrator
     #Requires -Version 7.0
     #requires -Module IISAdministration
     $ErrorActionPreference = "Stop"
+    $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+    if (-not $sitePhysicalPath) {
+        $sitePhysicalPath = Resolve-Path (Join-Path -Path $scriptDir -ChildPath "..\src")
+    }
     if (-not (Test-Path -Path $sitePhysicalPath)) {
-        Write-Error "Site physical path not found"
+        Write-Error "Site physical path not found. Exiting..."
     }
     if ($null -eq $phpInstallationPath) {
         $envPath = $env:Path
@@ -52,17 +59,16 @@ begin {
     if (-not (Test-Path `
                 -Path $executablePath `
                 -PathType Leaf)) {
-        Write-Error "PHP not installed"
+        Write-Error "PHP not installed. Exiting..."
     }
     Import-Module IISAdministration
     $server = Get-IISServerManager
     $siteName = "usi-php-app"
     $siteUrl = "windows.usiphp.net"
-    $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
     $iniSourcePath = Join-Path $scriptDir "php-settings-windows.ini"
 }
 process {
-    Write-Host "Setting up SSL certificate..."
+    Write-Host "${GREEN}Setting up SSL certificate...${NC}"
     foreach ($storeName in "My", "Root", "WebHosting") {
         $store = New-Object X509Store($storeName, "LocalMachine")
         $store.Open("ReadWrite")
@@ -90,7 +96,7 @@ process {
         $store.Close()
     }
 
-    Write-Host "Setting up app pool and site..."
+    Write-Host "${GREEN}Setting up app pool and site...${NC}"
     $site = $server.Sites[$siteName]
     if ($null -ne $site) {
         $server.Sites.Remove($site)
@@ -103,11 +109,13 @@ process {
     $site = $server.Sites.Add($siteName, "*:443:$siteUrl", $sitePhysicalPath, $certificate.GetCertHash(), "WebHosting")
     $site.ApplicationDefaults.ApplicationPoolName = $appPool.Name
 
-    Write-Host "Setting up FastCGI..."
+    Write-Host "${GREEN}Setting up FastCGI...${NC}"
     $confDir = Join-Path `
         -Path $phpInstallationPath `
         -ChildPath "conf.d"
-    if (-not (Test-Path -Path $confDir)) {
+    if (-not (Test-Path `
+                -Path $confDir `
+                -PathType Container)) {
         New-Item `
             -Path $confDir `
             -ItemType Directory | Out-Null
@@ -147,7 +155,7 @@ process {
     $fastCgiCollection.Add($applicationElement) | Out-Null
     $server.CommitChanges()
 
-    Write-Host "Setting up local DNS..."
+    Write-Host "${GREEN}Setting up local DNS...${NC}"
     $hostsFilePath = Join-Path `
         -Path $env:WinDir `
         -ChildPath "system32\Drivers\etc\hosts"
@@ -162,5 +170,5 @@ process {
     & ipconfig /flushdns | Out-Null
 }
 end {
-    Write-Host "Setup completed."
+    Write-Host "${GREEN}Setup completed. You can access the site at https://$siteUrl${NC}"
 }
