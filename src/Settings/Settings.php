@@ -39,7 +39,6 @@ namespace Usi\Views;
                                     Current Org Code: <em id="txtCurrentOrgCode"><?= $settingsViewModel->CurrentOrgCode ?></em>
                                 </dt>
                                 <dd>
-                                    <a id="btnReset" href="#" class="button">Reset</a>
                                     <a id="btnSubmit" href="#" class="button">Apply</a>
                                 </dd>
                             </dl>

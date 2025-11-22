@@ -13,12 +13,6 @@ $(document).ready(function () {
     $("#key-" + $("#cbEnvironment").val() + "-" + $(this).val()).show();
   });
 
-  $("#btnReset").click(function (e) {
-    e.preventDefault();
-    var environmentComboBox = $("#cbEnvironment");
-    environmentComboBox.val($("option[data-current='true']", environmentComboBox).val() || $("option:first", environmentComboBox).val()).change();
-  });
-
   $("#btnSubmit").click(function (e) {
     e.preventDefault();
     if ($(this).hasClass("disabled") || $(this).hasClass("primary")) {
@@ -40,7 +34,7 @@ $(document).ready(function () {
         });
         $("#txtCurrentEnvironment").text(data.Environment);
         $("#txtCurrentOrgCode").text(data.OrgCode);
-        $("#btnReset").click();
+        initialise();
       })
       .always(function () {
         $(".button, select").removeClass("disabled");
@@ -56,5 +50,10 @@ $(document).ready(function () {
     });
   });
 
-  $("#btnReset").click();
+  initialise();
 });
+
+function initialise() {
+  var environmentComboBox = $("#cbEnvironment");
+  environmentComboBox.val($("option[data-current='true']", environmentComboBox).val() || $("option:first", environmentComboBox).val()).change();
+}

@@ -1,44 +1,39 @@
 #!/bin/bash
 set -e
+GREEN="\033[32m"
+NC="\033[0m"
 
+echo -e "${GREEN}Preparing...${NC}"
 if [ ! -x "$0" ]; then
-    echo "Fixing permissions on $0..."
     sudo chmod +x "$0"
 fi
-
-# Check if the system is Debian-based
 if [[ ! -f /etc/debian_version ]]; then
   echo -e "This is not a Debian-based system. Exiting..."
   exit 1
 fi
-
 if [ "$(id -u)" -ne 0 ]; then
-    echo -e "Please run as root (use sudo)."
+    echo -e "Please run as root (use sudo). Exiting..."
     exit 1
 fi
-
-# Check if Apache is installed
 if ! dpkg-query -W -f='${Status}' apache2 2>/dev/null | grep -q "install ok installed"; then
-  echo -e "Apache is not installed. Please install Apache before running this script."
+  echo -e "Apache is not installed. Please install Apache before running this script. Exiting..."
   exit 1
 fi
-
-# Check if the document root is provided
-if [ -z "$1" ]; then
-  echo -e "Usage: $0 /path/to/document/root"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+if [ -z "${1:-}" ]; then
+  DOCUMENT_ROOT="$(realpath "$SCRIPT_DIR/../src")"
+else
+  DOCUMENT_ROOT="$(realpath "$1")"
+fi
+if [ ! -d "$DOCUMENT_ROOT" ]; then
+  echo -e "Document root directory '$DOCUMENT_ROOT' does not exist. Exiting..."
   exit 1
 fi
-
-GREEN="\033[32m"
-NC="\033[0m"
-DOCUMENT_ROOT=$1
 DOMAIN="linux.usiphp.net"
 CERT_DIR="/etc/ssl/$DOMAIN"
 CONFIG_FILE="/etc/apache2/sites-available/$DOMAIN.conf"
 TMP_CONFIG_FILE="/tmp/$DOMAIN.tmp"
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Install required packages
 echo -e "${GREEN}Installing required packages...${NC}"
 sudo apt-get install -y \
       openssl \
@@ -46,7 +41,6 @@ sudo apt-get install -y \
       php-xsl \
       php-xdebug
 
-# Enable required modules
 echo -e "${GREEN}Enabling required modules...${NC}"
 sudo a2enmod \
       rewrite \
@@ -54,7 +48,6 @@ sudo a2enmod \
       deflate \
       ssl
 
-# Create SSL certificate
 echo -e "${GREEN}Creating SSL certificate...${NC}"
 mkdir -p $CERT_DIR
 sudo openssl genpkey \
@@ -71,7 +64,6 @@ sudo openssl req \
 sudo cp $CERT_DIR/$DOMAIN.crt /usr/local/share/ca-certificates/$DOMAIN.crt
 sudo update-ca-certificates --fresh
 
-# Create the Web site's apache conf
 echo -e "${GREEN}Updating Apache configuration...${NC}"
 cat <<EOL > $TMP_CONFIG_FILE
 ServerName localhost
@@ -121,13 +113,11 @@ ServerName localhost
 EOL
 sudo mv $TMP_CONFIG_FILE $CONFIG_FILE
 
-# Add entry to /etc/hosts if not already present
 echo -e "${GREEN}Updating hosts...${NC}"
 if ! grep -qw "${DOMAIN}" /etc/hosts; then
     echo "127.0.0.1 ${DOMAIN}" | sudo tee -a /etc/hosts
 fi
 
-# Add configuration
 echo -e "${GREEN}Adding PHP configuration...${NC}"
 phpVersion=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')
 customIni="/etc/php/${phpVersion}/apache2/conf.d/99-${DOMAIN}.ini"
@@ -137,7 +127,8 @@ sudo mv $TMP_CONFIG_FILE $customIni
 sudo chown root:root $customIni
 sudo chmod 644 $customIni
 
-# Enable the site
 echo -e "${GREEN}Enabling the site...${NC}"
 sudo a2ensite $DOMAIN.conf
 sudo systemctl restart apache2
+
+echo -e "${GREEN}Setup completed. You can access the site at https://${DOMAIN}${NC}"
