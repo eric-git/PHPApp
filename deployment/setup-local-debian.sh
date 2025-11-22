@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if [ ! -x "$0" ]; then
+    echo "Fixing permissions on $0..."
+    sudo chmod +x "$0"
+fi
+
 # Check if the system is Debian-based
 if [[ ! -f /etc/debian_version ]]; then
   echo -e "This is not a Debian-based system. Exiting..."
@@ -27,10 +32,11 @@ fi
 GREEN="\033[32m"
 NC="\033[0m"
 DOCUMENT_ROOT=$1
-DOMAIN="usiphp.net"
+DOMAIN="linux.usiphp.net"
 CERT_DIR="/etc/ssl/$DOMAIN"
 CONFIG_FILE="/etc/apache2/sites-available/$DOMAIN.conf"
-TMP_CONFIG_FILE="/tmp/$DOMAIN.conf"
+TMP_CONFIG_FILE="/tmp/$DOMAIN.tmp"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Install required packages
 echo -e "${GREEN}Installing required packages...${NC}"
@@ -70,7 +76,7 @@ echo -e "${GREEN}Updating Apache configuration...${NC}"
 cat <<EOL > $TMP_CONFIG_FILE
 ServerName localhost
 <VirtualHost 127.0.0.1:80>
-    ServerName www.$DOMAIN
+    ServerName $DOMAIN
     DocumentRoot "$DOCUMENT_ROOT"
     <Directory "$DOCUMENT_ROOT">
         Options FollowSymLinks
@@ -84,7 +90,7 @@ ServerName localhost
     </IfModule>
 </VirtualHost>
 <VirtualHost 127.0.0.1:443>
-    ServerName www.$DOMAIN
+    ServerName $DOMAIN
     DocumentRoot "$DOCUMENT_ROOT"
     SSLEngine on
     SSLCertificateFile "$CERT_DIR/$DOMAIN.crt"
@@ -111,19 +117,25 @@ ServerName localhost
     <IfModule mod_deflate.c>
         AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
     </IfModule>
-    <IfModule mod_php.c>
-        php_value zlib.output_compression On
-        php_value zlib.output_compression_level 6
-    </IfModule>
 </VirtualHost>
 EOL
 sudo mv $TMP_CONFIG_FILE $CONFIG_FILE
 
 # Add entry to /etc/hosts if not already present
 echo -e "${GREEN}Updating hosts...${NC}"
-if ! grep -qw "www.${DOMAIN}" /etc/hosts; then
-    echo "127.0.0.1 www.${DOMAIN}" | sudo tee -a /etc/hosts
+if ! grep -qw "${DOMAIN}" /etc/hosts; then
+    echo "127.0.0.1 ${DOMAIN}" | sudo tee -a /etc/hosts
 fi
+
+# Add configuration
+echo -e "${GREEN}Adding PHP configuration...${NC}"
+phpVersion=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')
+customIni="/etc/php/${phpVersion}/apache2/conf.d/99-${DOMAIN}.ini"
+echo "open_basedir = ${DOCUMENT_ROOT}:/tmp" > $TMP_CONFIG_FILE
+cat "${SCRIPT_DIR}/php-settings-debian.ini" >> $TMP_CONFIG_FILE
+sudo mv $TMP_CONFIG_FILE $customIni
+sudo chown root:root $customIni
+sudo chmod 644 $customIni
 
 # Enable the site
 echo -e "${GREEN}Enabling the site...${NC}"
