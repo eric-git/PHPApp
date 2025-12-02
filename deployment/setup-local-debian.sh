@@ -87,6 +87,9 @@ ServerName localhost
     SSLEngine on
     SSLCertificateFile "$CERT_DIR/$DOMAIN.crt"
     SSLCertificateKeyFile "$CERT_DIR/$DOMAIN.key"
+    <FilesMatch "(\.env|.*\.config)$">
+        Require all denied
+    </FilesMatch>
     <Directory "$DOCUMENT_ROOT">
         Options FollowSymLinks
         AllowOverride All
