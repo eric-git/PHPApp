@@ -112,7 +112,7 @@ class StsServiceClient extends BaseServiceClient
             // <v13:FirstParty> @Value
             $firstPartyValueAttribute = $requestXPath->query("v13:FirstParty/@v13:Value", $relationshipTokenElement)->item(0);
             $firstPartyValueAttribute->nodeValue = $this->OrgData->ABN;
-            
+
             // <v13:SecondParty> @Value
             $secondPartyValueAttribute = $requestXPath->query("v13:SecondParty/@v13:Value", $relationshipTokenElement)->item(0);
             $secondPartyValueAttribute->nodeValue = $this->OrgData->SecondPartyAbn;
