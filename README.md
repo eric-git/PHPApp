@@ -1,6 +1,6 @@
-# PHPApp
+# PHP Sample Application for USI Services
 
-A simple PHP application that demonstrates integration with the **USI system**.  
+A simple PHP application that demonstrates integration with the **USI Services**.  
 It provides examples for:
 
 - Calling ATO’s STS to obtain a SAML security token
