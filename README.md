@@ -13,7 +13,7 @@ It provides examples for:
 
 ### Windows
 
-- PHP 8.x installed
+- PHP 8.x+ installed
 - IIS feature enabled
 - [CGI feature](https://learn.microsoft.com/en-us/iis/configuration/system.webserver/cgi) enabled
 - [URL Rewrite module](https://www.iis.net/downloads/microsoft/url-rewrite) installed
@@ -21,7 +21,7 @@ It provides examples for:
 
 ### Debian‑based Linux
 
-- PHP 8.x installed
+- PHP 8.x+ installed
 - [Apache](https://httpd.apache.org/) installed
 - [libapache2-mod-php](https://packages.debian.org/sid/libapache2-mod-php) installed
 
