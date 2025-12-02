@@ -5,6 +5,7 @@
         "xdebug.php-debug",
         "bmewburn.vscode-intelephense-client",
         "ms-vscode.powershell",
-        "mads-hartmann.bash-ide-vscode"
+        "mads-hartmann.bash-ide-vscode",
+        "dotjoshjohnson.xml"
     ]
 }

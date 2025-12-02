@@ -1,43 +1,78 @@
-# PHP App
+# PHPApp
 
-This application is a simple PHP implementation to help users of USI system to achieve:
+A simple PHP application that demonstrates integration with the **USI system**.  
+It provides examples for:
 
-- Calling ATO's STS to obtain a SAML security token
-- Calling USI Web Service using the security token obtained
-- If a local Website (https://windows.usiphp.net for a Windows OS, or https://linux.usiphp.net for a Debian-based OS) is needed, please follow the below instructions
+- Calling ATO’s STS to obtain a SAML security token
+- Using the obtained token to call the USI Web Service
+- Running locally on Windows (`https://windows.usiphp.net`) or Debian‑based Linux (`https://linux.usiphp.net`)
 
-## Prerequisites
+---
 
-- Ensure PHP 8.x has been installed
-- For Windows OS:
-  - Ensure the IIS feature has been enabled
-  - Enable [CGI feature](https://learn.microsoft.com/en-us/iis/configuration/system.webserver/cgi)
-  - Install [URL Rewrite module](https://www.iis.net/downloads/microsoft/url-rewrite) on IIS
-  - Install [PowerShell 7+](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows)
-- For Debian-based Linux OS:
-  - Ensure the [Apache](https://httpd.apache.org/) package is installed
-  - Ensure package [libapache2-mod-php](https://packages.debian.org/sid/libapache2-mod-php) has been installed
+## 📦 Prerequisites
 
-## Local development setup on Windows OS
+### Windows
 
-You may setup the project on a Windows PC using IIS. Please run [setup-local-windows.ps1](deployment/setup-local-windows.ps1) with administration privilege to setup your local development environment.
+- PHP 8.x installed
+- IIS feature enabled
+- [CGI feature](https://learn.microsoft.com/en-us/iis/configuration/system.webserver/cgi) enabled
+- [URL Rewrite module](https://www.iis.net/downloads/microsoft/url-rewrite) installed
+- [PowerShell 7+](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows)
 
-- You may use the following command to get details of the command:
-  ```powershell
-  Get-Help ".\setup-local-windows.ps1" -Full
-  ```
-- XDebug Windows binaries can be downloaded [here](https://xdebug.org/download). Please place the binary under `<PHP installation directory>\ext`, and rename it to `php_xdebug.dll`
-- Ensure the attribute `scriptProcessor` for FastCgiModule points to the actual PHP installation path in [web.config](src/web.config). By default, it is C:\PHP\php-cgi.exe.
+### Debian‑based Linux
 
-## Local development setup on Debian-based Linux OS
+- PHP 8.x installed
+- [Apache](https://httpd.apache.org/) installed
+- [libapache2-mod-php](https://packages.debian.org/sid/libapache2-mod-php) installed
 
-You may setup the project on a Debian-based Linux OS, Please run [setup-local-debian.sh](deployment/setup-local-debian.sh) to setup your local development environment.
+---
 
-```sh
-# parameter "path/to/src/directory/of/the/project" is optional, default is <script file directory path>/../src
-sudo ./setup-local-debian.sh "path/to/src/directory/of/the/project"
+## ⚙️ Local Development Setup
+
+### Windows (IIS)
+
+Run the setup script with admin privileges:
+
+```powershell
+.\deployment\setup-local-windows.ps1
 ```
 
-## Issues
+Get help for parameters:
 
-For any issues, requests and/or discussions, please raise them on GitHub.
+```powershell
+Get-Help ".\setup-local-windows.ps1" -Full
+```
+
+Additional notes:
+
+- Download [XDebug binaries](https://xdebug.org/download) → place in `<PHP installation directory>\ext` and rename to `php_xdebug.dll`.
+- Ensure the `scriptProcessor` attribute in [web.config](src/web.config) points to your PHP installation path (default: `C:\PHP\php-cgi.exe`).
+
+---
+
+### Debian‑based Linux
+
+Run the setup script:
+
+```sh
+sudo ./deployment/setup-local-debian.sh "path/to/src"
+```
+
+- The `path/to/src` parameter is optional.
+- Default path: `<script file directory>/../src`.
+
+---
+
+## 🐛 Issues & Support
+
+- Raise bugs, requests, or discussions on [GitHub Issues](../../issues).
+- For security concerns, please see [SECURITY](SECURITY.md).
+- For general support, contact **it@usi.gov.au** or see [SUPPORT](SUPPORT.md).
+
+---
+
+## 📚 Additional Documentation
+
+- [SECURITY](SECURITY.md) → Vulnerability reporting
+- [SUPPORT](SUPPORT.md) → Getting help
+- [LICENSE](LICENSE.txt) → License information
