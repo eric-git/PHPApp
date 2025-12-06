@@ -1,6 +1,6 @@
 # PHP Sample Application for USI Services
 
-A simple PHP application that demonstrates integration with the **USI Services**.  
+A simple PHP application that demonstrates integration with the **USI Services**.
 It provides examples for:
 
 - Calling ATO’s STS to obtain a SAML security token
@@ -54,12 +54,25 @@ Additional notes:
 
 Run the setup script:
 
-```sh
+```bash
 sudo ./deployment/setup-local-debian.sh "path/to/src"
 ```
 
 - The `path/to/src` parameter is optional.
 - Default path: `<script file directory>/../src`.
+
+---
+
+## 🧪 Testing Accounts
+
+Two test accounts are available:
+
+- **VA1802** → Example for _ActAs_ delegation
+  - First party: `11000002568`
+  - Second party: `96312011219`
+- **VA1803** → Example for common cases
+
+See [keystore-usi.xml](./src/assets/configuration/Development/keystore-usi.xml) for machine account settings.
 
 ---
 
@@ -71,8 +84,6 @@ sudo ./deployment/setup-local-debian.sh "path/to/src"
 
 ---
 
-## 📚 Additional Documentation
+## 📚 Additional Notes
 
-- [SECURITY](SECURITY.md) → Vulnerability reporting
-- [SUPPORT](SUPPORT.md) → Getting help
-- [LICENSE](LICENSE.txt) → License information
+- The sample is intended for **development and testing only**; do not use test accounts in production.
