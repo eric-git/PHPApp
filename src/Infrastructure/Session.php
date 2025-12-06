@@ -11,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION["ENVIRONMENT"])) {
-    $_SESSION["ENVIRONMENT"] = "3PT";
+    $_SESSION["ENVIRONMENT"] = "Development";
 }
 
 $configuration = ConfigurationManager::getConfiguration($_SESSION["ENVIRONMENT"]);

@@ -30,9 +30,6 @@ if [ ! -d "$DOCUMENT_ROOT" ]; then
   exit 1
 fi
 DOMAIN="linux.usiphp.net"
-CERT_DIR="/etc/ssl/$DOMAIN"
-CONFIG_FILE="/etc/apache2/sites-available/$DOMAIN.conf"
-TMP_CONFIG_FILE="/tmp/$DOMAIN.tmp"
 
 echo -e "${GREEN}Installing required packages...${NC}"
 sudo apt-get install -y \
@@ -49,23 +46,24 @@ sudo a2enmod \
       ssl
 
 echo -e "${GREEN}Creating SSL certificate...${NC}"
-mkdir -p $CERT_DIR
+mkdir -p /etc/ssl/$DOMAIN
 sudo openssl genpkey \
   -algorithm RSA \
-  -out $CERT_DIR/$DOMAIN.key
+  -out /etc/ssl/$DOMAIN/$DOMAIN.key
 sudo openssl req \
   -new \
   -x509 \
-  -key $CERT_DIR/$DOMAIN.key \
-  -out $CERT_DIR/$DOMAIN.crt \
+  -key /etc/ssl/$DOMAIN/$DOMAIN.key \
+  -out /etc/ssl/$DOMAIN/$DOMAIN.crt \
   -days 3650 \
   -subj "/C=AU/ST=State/L=City/O=Organization/OU=Department/CN=$DOMAIN" \
   -addext "subjectAltName=DNS:$DOMAIN"
-sudo cp $CERT_DIR/$DOMAIN.crt /usr/local/share/ca-certificates/$DOMAIN.crt
+sudo cp /etc/ssl/$DOMAIN/$DOMAIN.crt /usr/local/share/ca-certificates/$DOMAIN.crt
 sudo update-ca-certificates --fresh
 
 echo -e "${GREEN}Updating Apache configuration...${NC}"
-cat <<EOL > $TMP_CONFIG_FILE
+tempFile=$(mktemp)
+cat <<EOL > $tempFile
 ServerName localhost
 <VirtualHost 127.0.0.1:80>
     ServerName $DOMAIN
@@ -85,8 +83,8 @@ ServerName localhost
     ServerName $DOMAIN
     DocumentRoot "$DOCUMENT_ROOT"
     SSLEngine on
-    SSLCertificateFile "$CERT_DIR/$DOMAIN.crt"
-    SSLCertificateKeyFile "$CERT_DIR/$DOMAIN.key"
+    SSLCertificateFile "/etc/ssl/$DOMAIN/$DOMAIN.crt"
+    SSLCertificateKeyFile "/etc/ssl/$DOMAIN/$DOMAIN.key"
     <FilesMatch "(\.env|.*\.config)$">
         Require all denied
     </FilesMatch>
@@ -114,7 +112,7 @@ ServerName localhost
     </IfModule>
 </VirtualHost>
 EOL
-sudo mv $TMP_CONFIG_FILE $CONFIG_FILE
+sudo mv $tempFile /etc/apache2/sites-available/$DOMAIN.conf
 
 echo -e "${GREEN}Updating hosts...${NC}"
 if ! grep -qw "${DOMAIN}" /etc/hosts; then
@@ -124,9 +122,10 @@ fi
 echo -e "${GREEN}Adding PHP configuration...${NC}"
 phpVersion=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')
 customIni="/etc/php/${phpVersion}/apache2/conf.d/99-${DOMAIN}.ini"
-echo "open_basedir = ${DOCUMENT_ROOT}:/tmp" > $TMP_CONFIG_FILE
-cat "${SCRIPT_DIR}/php-settings-debian.ini" >> $TMP_CONFIG_FILE
-sudo mv $TMP_CONFIG_FILE $customIni
+tempFile=$(mktemp)
+echo "open_basedir = ${DOCUMENT_ROOT}:/tmp" > $tempFile
+cat "${SCRIPT_DIR}/php-settings-debian.ini" >> $tempFile
+sudo mv $tempFile $customIni
 sudo chown root:root $customIni
 sudo chmod 644 $customIni
 
