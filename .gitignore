@@ -1,0 +1,20 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# IDE/editor junk
+*.swp
+*.swo
+*.bak
+*.tmp
+*.log
+.vs/
+
+# Composer dependencies
+/vendor/
+
+# PHPUnit cache
+.phpunit.result.cache
+
+# Generic cache dirs
+/cache/

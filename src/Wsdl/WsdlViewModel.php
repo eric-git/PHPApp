@@ -8,11 +8,11 @@ require_once(sprintf("%s/Infrastructure/BaseViewModel.php", $_SERVER["DOCUMENT_R
 
 class WsdlViewModel extends BaseViewModel
 {
-    public readonly string $OriginalWsdl;
-    public string $Wsdl;
+  public readonly string $OriginalWsdl;
+  public string $Wsdl;
 
-    public function __construct(string $originalWsdl)
-    {
-        $this->OriginalWsdl = $originalWsdl;
-    }
+  public function __construct(string $originalWsdl)
+  {
+    $this->OriginalWsdl = $originalWsdl;
+  }
 }

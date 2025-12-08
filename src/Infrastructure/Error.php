@@ -8,22 +8,21 @@ use ErrorException;
 
 function shutdownHandler(): void
 {
-    $error = error_get_last();
-    if (isset($error) && $error["type"] == E_ERROR) {
-        errorHandler($error["type"], $error["message"], $error["file"], $error["line"]);
-    }
+  $error = error_get_last();
+  if (isset($error) && $error["type"] == E_ERROR) {
+    errorHandler($error["type"], $error["message"], $error["file"], $error["line"]);
+  }
 }
 
 function errorHandler(int $errNo, string $errMsg, string $file, int $line): void
 {
-    $errorException = new ErrorException($errMsg, 0, $errNo, $file, $line);
-    exceptionHandler($errorException);
+  $errorException = new ErrorException($errMsg, 0, $errNo, $file, $line);
+  exceptionHandler($errorException);
 }
 
 function exceptionHandler($exception): void
 {
-    // todo: log error
-    echo "<script type=\"text/javascript\">window.location=\"/error/500\";</script>";
+  echo "<script type=\"text/javascript\">window.location=\"/error/500\";</script>";
 }
 
 register_shutdown_function("Usi\Infrastructure\\shutdownHandler");

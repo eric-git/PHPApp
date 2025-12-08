@@ -7,14 +7,14 @@ namespace Usi\Configuration;
 require_once(sprintf("%s/Infrastructure/ConfigurationManager.php", $_SERVER["DOCUMENT_ROOT"]));
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+  session_start();
 }
 
 if (!isset($_SESSION["ENVIRONMENT"])) {
-    $_SESSION["ENVIRONMENT"] = "Development";
+  $_SESSION["ENVIRONMENT"] = "Development";
 }
 
 $configuration = ConfigurationManager::getConfiguration($_SESSION["ENVIRONMENT"]);
 if (!isset($_SESSION["ORGCODE"])) {
-    $_SESSION["ORGCODE"] = $configuration->DefaultOrgCode;
+  $_SESSION["ORGCODE"] = $configuration->DefaultOrgCode;
 }
