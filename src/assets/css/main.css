@@ -202,10 +202,18 @@ textarea {
 }
 
 a {
-  -moz-transition: border-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  -webkit-transition: border-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  -ms-transition: border-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  transition: border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  -moz-transition:
+    border-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+  -webkit-transition:
+    border-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+  -ms-transition:
+    border-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+  transition:
+    border-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
   border-bottom: dotted 1px;
   color: #e44c65;
   text-decoration: none;
@@ -671,10 +679,18 @@ body.landing:before {
 }
 
 body.landing:before {
-  -moz-animation: spinner-show 1.5s 1 0.25s ease forwards, spinner-hide 0.25s ease-in-out forwards !important;
-  -webkit-animation: spinner-show 1.5s 1 0.25s ease forwards, spinner-hide 0.25s ease-in-out forwards !important;
-  -ms-animation: spinner-show 1.5s 1 0.25s ease forwards, spinner-hide 0.25s ease-in-out forwards !important;
-  animation: spinner-show 1.5s 1 0.25s ease forwards, spinner-hide 0.25s ease-in-out forwards !important;
+  -moz-animation:
+    spinner-show 1.5s 1 0.25s ease forwards,
+    spinner-hide 0.25s ease-in-out forwards !important;
+  -webkit-animation:
+    spinner-show 1.5s 1 0.25s ease forwards,
+    spinner-hide 0.25s ease-in-out forwards !important;
+  -ms-animation:
+    spinner-show 1.5s 1 0.25s ease forwards,
+    spinner-hide 0.25s ease-in-out forwards !important;
+  animation:
+    spinner-show 1.5s 1 0.25s ease forwards,
+    spinner-hide 0.25s ease-in-out forwards !important;
   -moz-transform-origin: 50% 50%;
   -webkit-transform-origin: 50% 50%;
   -ms-transform-origin: 50% 50%;
@@ -714,10 +730,18 @@ body.landing:after {
 }
 
 body.landing.is-preload:before {
-  -moz-animation: spinner-show 1.5s 1 0.25s ease forwards, spinner-rotate 0.75s infinite linear !important;
-  -webkit-animation: spinner-show 1.5s 1 0.25s ease forwards, spinner-rotate 0.75s infinite linear !important;
-  -ms-animation: spinner-show 1.5s 1 0.25s ease forwards, spinner-rotate 0.75s infinite linear !important;
-  animation: spinner-show 1.5s 1 0.25s ease forwards, spinner-rotate 0.75s infinite linear !important;
+  -moz-animation:
+    spinner-show 1.5s 1 0.25s ease forwards,
+    spinner-rotate 0.75s infinite linear !important;
+  -webkit-animation:
+    spinner-show 1.5s 1 0.25s ease forwards,
+    spinner-rotate 0.75s infinite linear !important;
+  -ms-animation:
+    spinner-show 1.5s 1 0.25s ease forwards,
+    spinner-rotate 0.75s infinite linear !important;
+  animation:
+    spinner-show 1.5s 1 0.25s ease forwards,
+    spinner-rotate 0.75s infinite linear !important;
   z-index: 100001;
 }
 
@@ -2559,7 +2583,11 @@ input[type="radio"] + label:before {
 
 .icon.alt:before {
   color: #1c1d26 !important;
-  text-shadow: 1px 0 0 #ffffff, -1px 0 0 #ffffff, 0 1px 0 #ffffff, 0 -1px 0 #ffffff;
+  text-shadow:
+    1px 0 0 #ffffff,
+    -1px 0 0 #ffffff,
+    0 1px 0 #ffffff,
+    0 -1px 0 #ffffff;
 }
 
 .icon.major {
@@ -2597,7 +2625,11 @@ input[type="radio"] + label:before {
 
 .icon.major.alt:before {
   color: #272833 !important;
-  text-shadow: 1px 0 0 #ffffff, -1px 0 0 #ffffff, 0 1px 0 #ffffff, 0 -1px 0 #ffffff;
+  text-shadow:
+    1px 0 0 #ffffff,
+    -1px 0 0 #ffffff,
+    0 1px 0 #ffffff,
+    0 -1px 0 #ffffff;
 }
 
 /* Image */
@@ -2921,10 +2953,22 @@ input[type="button"],
   -webkit-appearance: none;
   -ms-appearance: none;
   appearance: none;
-  -moz-transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  -webkit-transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  -ms-transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  -moz-transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+  -webkit-transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+  -ms-transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
   background-color: transparent;
   border-radius: 4px;
   border: 0;
@@ -3174,10 +3218,18 @@ input[type="button"]:disabled,
   -webkit-transform: translate(0, 0);
   -ms-transform: translate(0, 0);
   transform: translate(0, 0);
-  -moz-transition: -moz-transform 1s ease, opacity 1s ease;
-  -webkit-transition: -webkit-transform 1s ease, opacity 1s ease;
-  -ms-transition: -ms-transform 1s ease, opacity 1s ease;
-  transition: transform 1s ease, opacity 1s ease;
+  -moz-transition:
+    -moz-transform 1s ease,
+    opacity 1s ease;
+  -webkit-transition:
+    -webkit-transform 1s ease,
+    opacity 1s ease;
+  -ms-transition:
+    -ms-transform 1s ease,
+    opacity 1s ease;
+  transition:
+    transform 1s ease,
+    opacity 1s ease;
   background: rgba(23, 24, 32, 0.95);
   border-style: solid;
   opacity: 1;
@@ -3189,10 +3241,18 @@ input[type="button"]:disabled,
   -webkit-transform: translate(0, 0);
   -ms-transform: translate(0, 0);
   transform: translate(0, 0);
-  -moz-transition: -moz-transform 0.75s ease, opacity 1s ease-in;
-  -webkit-transition: -webkit-transform 0.75s ease, opacity 1s ease-in;
-  -ms-transition: -ms-transform 0.75s ease, opacity 1s ease-in;
-  transition: transform 0.75s ease, opacity 1s ease-in;
+  -moz-transition:
+    -moz-transform 0.75s ease,
+    opacity 1s ease-in;
+  -webkit-transition:
+    -webkit-transform 0.75s ease,
+    opacity 1s ease-in;
+  -ms-transition:
+    -ms-transform 0.75s ease,
+    opacity 1s ease-in;
+  transition:
+    transform 0.75s ease,
+    opacity 1s ease-in;
   -moz-transition-delay: 0.5s;
   -webkit-transition-delay: 0.5s;
   -ms-transition-delay: 0.5s;
@@ -3362,10 +3422,18 @@ body.is-touch .spotlight {
   -webkit-transform: translate(0, 0);
   -ms-transform: translate(0, 0);
   transform: translate(0, 0);
-  -moz-transition: -moz-transform 1s ease, opacity 1s ease;
-  -webkit-transition: -webkit-transform 1s ease, opacity 1s ease;
-  -ms-transition: -ms-transform 1s ease, opacity 1s ease;
-  transition: transform 1s ease, opacity 1s ease;
+  -moz-transition:
+    -moz-transform 1s ease,
+    opacity 1s ease;
+  -webkit-transition:
+    -webkit-transform 1s ease,
+    opacity 1s ease;
+  -ms-transition:
+    -ms-transform 1s ease,
+    opacity 1s ease;
+  transition:
+    transform 1s ease,
+    opacity 1s ease;
   opacity: 1;
 }
 
@@ -3382,10 +3450,18 @@ body.is-touch .spotlight {
   -webkit-transform: translate(0, 0);
   -ms-transform: translate(0, 0);
   transform: translate(0, 0);
-  -moz-transition: -moz-transform 1s ease, opacity 1s ease;
-  -webkit-transition: -webkit-transform 1s ease, opacity 1s ease;
-  -ms-transition: -ms-transform 1s ease, opacity 1s ease;
-  transition: transform 1s ease, opacity 1s ease;
+  -moz-transition:
+    -moz-transform 1s ease,
+    opacity 1s ease;
+  -webkit-transition:
+    -webkit-transform 1s ease,
+    opacity 1s ease;
+  -ms-transition:
+    -ms-transform 1s ease,
+    opacity 1s ease;
+  transition:
+    transform 1s ease,
+    opacity 1s ease;
   opacity: 1;
 }
 
@@ -3576,10 +3652,22 @@ body.landing #header {
 }
 
 #banner:after {
-  background-image: -moz-linear-gradient(top, rgba(23, 24, 32, 0.95), rgba(23, 24, 32, 0.95)), url("images/overlay.png");
-  background-image: -webkit-linear-gradient(top, rgba(23, 24, 32, 0.95), rgba(23, 24, 32, 0.95)), url("images/overlay.png");
-  background-image: -ms-linear-gradient(top, rgba(23, 24, 32, 0.95), rgba(23, 24, 32, 0.95)), url("images/overlay.png");
-  background-image: linear-gradient(top, rgba(23, 24, 32, 0.95), rgba(23, 24, 32, 0.95)), url("images/overlay.png");
+  background-image:
+    -moz-linear-gradient(top, rgba(23, 24, 32, 0.95), rgba(23, 24, 32, 0.95)),
+    url("images/overlay.png");
+  background-image:
+    -webkit-linear-gradient(
+      top,
+      rgba(23, 24, 32, 0.95),
+      rgba(23, 24, 32, 0.95)
+    ),
+    url("images/overlay.png");
+  background-image:
+    -ms-linear-gradient(top, rgba(23, 24, 32, 0.95), rgba(23, 24, 32, 0.95)),
+    url("images/overlay.png");
+  background-image:
+    linear-gradient(top, rgba(23, 24, 32, 0.95), rgba(23, 24, 32, 0.95)),
+    url("images/overlay.png");
   content: "";
   display: block;
   height: 100%;
@@ -3661,7 +3749,11 @@ body.is-touch #banner {
 
 #footer .icons .icon.alt:before {
   color: #272833 !important;
-  text-shadow: 1px 0 0 rgba(255, 255, 255, 0.5), -1px 0 0 rgba(255, 255, 255, 0.5), 0 1px 0 rgba(255, 255, 255, 0.5), 0 -1px 0 rgba(255, 255, 255, 0.5);
+  text-shadow:
+    1px 0 0 rgba(255, 255, 255, 0.5),
+    -1px 0 0 rgba(255, 255, 255, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.5),
+    0 -1px 0 rgba(255, 255, 255, 0.5);
 }
 
 #footer .copyright {

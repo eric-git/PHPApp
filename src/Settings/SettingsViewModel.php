@@ -11,14 +11,14 @@ use Usi\Configuration\ConfigurationCollection;
 
 class SettingsViewModel extends BaseViewModel
 {
-    public readonly string $CurrentEnvironment;
-    public readonly string $CurrentOrgCode;
-    public readonly ConfigurationCollection $ConfigurationCollection;
+  public readonly string $CurrentEnvironment;
+  public readonly string $CurrentOrgCode;
+  public readonly ConfigurationCollection $ConfigurationCollection;
 
-    public function __construct(string $currentEnvironment, string $currentOrgCode, ConfigurationCollection $configurationCollection)
-    {
-        $this->CurrentEnvironment = $currentEnvironment;
-        $this->CurrentOrgCode = $currentOrgCode;
-        $this->ConfigurationCollection = $configurationCollection;
-    }
+  public function __construct(string $currentEnvironment, string $currentOrgCode, ConfigurationCollection $configurationCollection)
+  {
+    $this->CurrentEnvironment = $currentEnvironment;
+    $this->CurrentOrgCode = $currentOrgCode;
+    $this->ConfigurationCollection = $configurationCollection;
+  }
 }

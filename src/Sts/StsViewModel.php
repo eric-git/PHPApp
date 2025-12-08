@@ -8,16 +8,16 @@ require_once(sprintf("%s/Infrastructure/BaseViewModel.php", $_SERVER["DOCUMENT_R
 
 class StsViewModel extends BaseViewModel
 {
-    public readonly string $IssuerUrl;
-    public readonly string $AppliesTo;
+  public readonly string $IssuerUrl;
+  public readonly string $AppliesTo;
 
-    public string $OrgCode;
-    public string $RequestXml = "";
-    public string $ResponseXml = "";
+  public string $OrgCode;
+  public string $RequestXml = "";
+  public string $ResponseXml = "";
 
-    public function __construct(string $issuerUrl, string $appliesTo)
-    {
-        $this->IssuerUrl = $issuerUrl;
-        $this->AppliesTo = $appliesTo;
-    }
+  public function __construct(string $issuerUrl, string $appliesTo)
+  {
+    $this->IssuerUrl = $issuerUrl;
+    $this->AppliesTo = $appliesTo;
+  }
 }

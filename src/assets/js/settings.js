@@ -5,7 +5,12 @@ $(document).ready(function () {
     var orgComboBox = $("#org-" + $(this).val())
       .show()
       .find("select");
-    orgComboBox.val($("option[data-current='true']", orgComboBox).val() || $("option:first", orgComboBox).val()).change();
+    orgComboBox
+      .val(
+        $("option[data-current='true']", orgComboBox).val() ||
+          $("option:first", orgComboBox).val(),
+      )
+      .change();
   });
 
   $("[id^='org-'] select").change(function () {
@@ -55,5 +60,10 @@ $(document).ready(function () {
 
 function initialise() {
   var environmentComboBox = $("#cbEnvironment");
-  environmentComboBox.val($("option[data-current='true']", environmentComboBox).val() || $("option:first", environmentComboBox).val()).change();
+  environmentComboBox
+    .val(
+      $("option[data-current='true']", environmentComboBox).val() ||
+        $("option:first", environmentComboBox).val(),
+    )
+    .change();
 }

@@ -13,31 +13,31 @@ use Usi\ServiceClients\UsiServiceClient;
 
 class WsdlController extends BaseController
 {
-    private readonly UsiServiceClient $usiServiceClient;
+  private readonly UsiServiceClient $usiServiceClient;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->usiServiceClient = new UsiServiceClient($this->Configuration, $this->OrgKeyData);
-    }
+  public function __construct()
+  {
+    parent::__construct();
+    $this->usiServiceClient = new UsiServiceClient($this->Configuration, $this->OrgKeyData);
+  }
 
-    public function index(): void
-    {
-        $wsdlViewModel = $this->populateViewModel();
-        require_once(sprintf("%s/Wsdl/Wsdl.php", $_SERVER["DOCUMENT_ROOT"]));
-    }
+  public function index(): void
+  {
+    $wsdlViewModel = $this->populateViewModel();
+    require_once(sprintf("%s/Wsdl/Wsdl.php", $_SERVER["DOCUMENT_ROOT"]));
+  }
 
-    private function populateViewModel(): WsdlViewModel
-    {
-        $originalWsdl = $this->usiServiceClient->getWsdl();
-        $wsdlViewModel = new WsdlViewModel($originalWsdl);
-        $wsdlViewModel->Wsdl = parent::cleanXml($originalWsdl);
-        return $wsdlViewModel;
-    }
+  private function populateViewModel(): WsdlViewModel
+  {
+    $originalWsdl = $this->usiServiceClient->getWsdl();
+    $wsdlViewModel = new WsdlViewModel($originalWsdl);
+    $wsdlViewModel->Wsdl = parent::cleanXml($originalWsdl);
+    return $wsdlViewModel;
+  }
 
-    public function getWsdl(): array
-    {
-        $originalWsdl = $this->usiServiceClient->getWsdl();
-        return ["Wsdl" => parent::cleanXml($originalWsdl)];
-    }
+  public function getWsdl(): array
+  {
+    $originalWsdl = $this->usiServiceClient->getWsdl();
+    return ["Wsdl" => parent::cleanXml($originalWsdl)];
+  }
 }
