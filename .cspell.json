@@ -1,0 +1,109 @@
+{
+  "ignorePaths": [
+    "*.xml",
+    "*.svg",
+    "*.xslt",
+    "jquery.dropotron.min.js",
+    "breakpoints.min.js",
+    "jquery.scrolly.min.js",
+    "browser.min.js",
+    "main.css",
+    "main.js",
+    "util.js",
+    "vendor/**",
+    "node_modules/**"
+  ],
+  "dictionaries": [
+    "php",
+    "typescript",
+    "javascript",
+    "shell",
+    "softwareTerms",
+    "filetypes"
+  ],
+  "dictionaryDefinitions": [
+    {
+      "name": "php",
+      "path": "node_modules/@cspell/dict-php/cspell-ext.json"
+    },
+    {
+      "name": "typescript",
+      "path": "node_modules/@cspell/dict-typescript/cspell-ext.json"
+    },
+    {
+      "name": "shell",
+      "path": "node_modules/@cspell/dict-shell/cspell-ext.json"
+    },
+    {
+      "name": "softwareTerms",
+      "path": "node_modules/@cspell/dict-software-terms/cspell-ext.json"
+    },
+    {
+      "name": "filetypes",
+      "path": "node_modules/@cspell/dict-filetypes/cspell-ext.json"
+    }
+  ],
+  "words": [
+    "addext",
+    "aspx",
+    "Attr",
+    "autoplay",
+    "basedir",
+    "basename",
+    "bool",
+    "canonicalized",
+    "charset",
+    "Cond",
+    "deps",
+    "dirname",
+    "DOMXpath",
+    "dropotron",
+    "enmod",
+    "ensite",
+    "FASTCGI",
+    "FCGI",
+    "filesize",
+    "filetypes",
+    "flushdns",
+    "func",
+    "genpkey",
+    "goto",
+    "hmac",
+    "htmlentities",
+    "httponly",
+    "iisstart",
+    "initialise",
+    "instanceof",
+    "intval",
+    "ipconfig",
+    "isset",
+    "libapache",
+    "loglevel",
+    "ONLYDIR",
+    "Organisation",
+    "ORGCODE",
+    "param",
+    "phpinfo",
+    "PHPRC",
+    "PKCS",
+    "pkey",
+    "powershell",
+    "preg",
+    "samesite",
+    "scrolly",
+    "serviceclients",
+    "strcasecmp",
+    "strcmp",
+    "sudo",
+    "toastr",
+    "uasort",
+    "uniqid",
+    "usiphp",
+    "util",
+    "VHOST",
+    "vsprintf",
+    "wsdl",
+    "xenc",
+    "xslt"
+  ]
+}

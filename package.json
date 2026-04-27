@@ -1,0 +1,39 @@
+{
+  "name": "sample-php-wcf-client",
+  "version": "1.0.0",
+  "description": "A sample PHP WCF client application.",
+  "author": {
+    "name": "Eric Wu",
+    "email": "eric.wu@dewr.gov.au",
+    "url": "https://github.com/eric-git"
+  },
+  "type": "module",
+  "scripts": {
+    "spell-check": "npx cspell **/*",
+    "format": "npx prettier --write ."
+  },
+  "devDependencies": {
+    "@cspell/dict-filetypes": "3.0.18",
+    "@cspell/dict-php": "4.1.1",
+    "@cspell/dict-shell": "^1.1.2",
+    "@cspell/dict-software-terms": "5.2.0",
+    "cspell": "9.7.0",
+    "prettier": "3.8.1"
+  },
+  "engines": {
+    "node": ">=24",
+    "npm": ">=11"
+  },
+  "license": "MIT",
+  "keywords": [
+    "USI",
+    "WCF",
+    "client",
+    "sample",
+    "PHP"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eric-git/PHPApp"
+  }
+}

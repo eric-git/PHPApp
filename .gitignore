@@ -18,3 +18,5 @@ Thumbs.db
 
 # Generic cache dirs
 /cache/
+
+node_modules/
