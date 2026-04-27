@@ -1,174 +1,211 @@
 <#
 .SYNOPSIS
-    This command sets up a local development environment in Windows OS.
+    Sets up a local PHP development environment on Windows with IIS + FastCGI.
+
 .DESCRIPTION
-    This command sets up a local development environment for the PHP project. PHP, URL Rewrite module, CGI module must be installed before running this script.
+    Creates a self‑signed certificate, configures IIS site + app pool,
+    sets up FastCGI for PHP, and adds a hosts file entry.
+
 .NOTES
-    The command requires administration privilege.
-.LINK
-    www.usi.gov.au
+    Requires:
+      - Windows
+      - Admin privileges
+      - PHP installed (php.exe + php-cgi.exe)
+      - IIS + CGI + URL Rewrite + IISAdministration module
+
 .EXAMPLE
     .\setup-local-windows.ps1
-    This is using the default installation path "C:\PHP". Or you are not sure where PHP is installed, the function will find it out for you.
-    This is using the default site physical path ..\src relative to this script.
+    Uses default PHP path (C:\PHP) and default site path (..\src).
+
 .EXAMPLE
-    .\setup-local-windows.ps1 -sitePhysicalPath "C:\developer\Repos\PHPApp\src" -phpInstallationPath "C:\developer\php"
+    .\setup-local-windows.ps1 -sitePhysicalPath "C:\dev\PHPApp\src" -phpInstallationPath "C:\dev\php"
 #>
+
 using namespace System.Security.Cryptography.X509Certificates
+
 [CmdletBinding()]
 param(
-  [Parameter(HelpMessage = "Site physical path, default is ..\src relative to this script")]
-  [string]
-  $sitePhysicalPath,
-  [Parameter(HelpMessage = "PHP installation path, default is C:\PHP")]
-  [string]
-  $phpInstallationPath = "C:\PHP"
+  [Parameter(HelpMessage = "Site physical path. Default: ..\src relative to script.")]
+  [string] $sitePhysicalPath,
+
+  [Parameter(HelpMessage = "PHP installation path. Default: C:\PHP")]
+  [string] $phpInstallationPath = "C:\PHP"
 )
+
 begin {
   $GREEN = "`e[32m"
   $NC = "`e[0m"
-  Write-Host "${GREEN}Preparing...${NC}"
-  #Requires -RunAsAdministrator
-  #Requires -Version 7.0
-  #requires -Module IISAdministration
+
+  Write-Host "${GREEN}Preparing environment...${NC}"
+
   $ErrorActionPreference = "Stop"
+
+  # Resolve site path
   $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
   if (-not $sitePhysicalPath) {
-    $sitePhysicalPath = Resolve-Path (Join-Path -Path $scriptDir -ChildPath "..\src")
+    $sitePhysicalPath = Resolve-Path (Join-Path $scriptDir "..\src")
   }
-  if (-not (Test-Path -Path $sitePhysicalPath)) {
-    Write-Error "Site physical path not found. Exiting..."
+
+  if (-not (Test-Path $sitePhysicalPath)) {
+    throw "Site physical path not found: $sitePhysicalPath"
   }
-  if ($null -eq $phpInstallationPath) {
-    $envPath = $env:Path
-    if ($null -ne $envPath) {
-      foreach ($pathFromEnv in @($envPath.Split([System.IO.Path]::PathSeparator))) {
-        $executablePath = Join-Path $pathFromEnv "php.exe"
-        if (Test-Path `
-            -Path $executablePath `
-            -PathType Leaf) {
-          $phpInstallationPath = $pathFromEnv
-          break
-        }
+
+  # Auto-detect PHP if null
+  if (-not $phpInstallationPath) {
+    foreach ($path in $env:Path.Split([IO.Path]::PathSeparator)) {
+      $candidate = Join-Path $path "php.exe"
+      if (Test-Path $candidate) {
+        $phpInstallationPath = $path
+        break
       }
     }
   }
-  $executablePath = Join-Path `
-    -Path $phpInstallationPath `
-    -ChildPath "php.exe"
-  if (-not (Test-Path `
-        -Path $executablePath `
-        -PathType Leaf)) {
-    Write-Error "PHP not installed. Exiting..."
+
+  $phpExe = Join-Path $phpInstallationPath "php.exe"
+  if (-not (Test-Path $phpExe)) {
+    throw "PHP not found at: $phpInstallationPath"
   }
+
   Import-Module IISAdministration
+
   $server = Get-IISServerManager
   $siteName = "usi-php-app"
   $siteUrl = "windows.usiphp.net"
+
   $iniSourcePath = Join-Path $scriptDir "php-settings-windows.ini"
 }
+
 process {
+
+  # -------------------------
+  # SSL CERTIFICATE
+  # -------------------------
   Write-Host "${GREEN}Setting up SSL certificate...${NC}"
-  foreach ($storeName in "My", "Root", "WebHosting") {
-    $store = New-Object X509Store($storeName, "LocalMachine")
+
+  $stores = "My", "Root", "WebHosting"
+
+  foreach ($storeName in $stores) {
+    $store = [X509Store]::new($storeName, "LocalMachine")
     $store.Open("ReadWrite")
-    $store.Certificates | Where-Object {
-      $_.Subject -eq "CN=$siteUrl"
-    } | ForEach-Object {
-      $store.Remove($_)
-    }
+
+    $store.Certificates |
+    Where-Object { $_.Subject -eq "CN=$siteUrl" } |
+    ForEach-Object { $store.Remove($_) }
+
     $store.Close()
   }
+
   $certificate = New-SelfSignedCertificate `
     -Subject $siteUrl `
     -DnsName $siteUrl `
-    -CertStoreLocation Cert:\LocalMachine\My `
+    -CertStoreLocation "Cert:\LocalMachine\My" `
     -NotAfter (Get-Date).AddYears(10)
-  foreach ($storeName in "My", "Root", "WebHosting") {
-    $store = New-Object X509Store($storeName, "LocalMachine")
+
+  foreach ($storeName in $stores) {
+    $store = [X509Store]::new($storeName, "LocalMachine")
     $store.Open("ReadWrite")
+
     if ($storeName -eq "My") {
       $store.Remove($certificate)
     }
     else {
       $store.Add($certificate)
     }
+
     $store.Close()
   }
 
-  Write-Host "${GREEN}Setting up app pool and site...${NC}"
-  $site = $server.Sites[$siteName]
-  if ($null -ne $site) {
-    $server.Sites.Remove($site)
+  # -------------------------
+  # IIS SITE + APP POOL
+  # -------------------------
+  Write-Host "${GREEN}Configuring IIS site and app pool...${NC}"
+
+  if ($server.Sites[$siteName]) {
+    $server.Sites.Remove($server.Sites[$siteName])
   }
-  $appPool = $server.ApplicationPools[$siteName]
-  if ($null -ne $appPool) {
-    $server.ApplicationPools.Remove($appPool)
+
+  if ($server.ApplicationPools[$siteName]) {
+    $server.ApplicationPools.Remove($server.ApplicationPools[$siteName])
   }
+
   $appPool = $server.ApplicationPools.Add($siteName)
-  $site = $server.Sites.Add($siteName, "*:443:$siteUrl", $sitePhysicalPath, $certificate.GetCertHash(), "WebHosting")
+  $appPool.ManagedRuntimeVersion = ""   # No .NET runtime for PHP
+
+  $site = $server.Sites.Add(
+    $siteName,
+    "*:443:$siteUrl",
+    $sitePhysicalPath,
+    $certificate.GetCertHash(),
+    "WebHosting"
+  )
+
   $site.ApplicationDefaults.ApplicationPoolName = $appPool.Name
 
-  Write-Host "${GREEN}Setting up FastCGI...${NC}"
-  $confDir = Join-Path `
-    -Path $phpInstallationPath `
-    -ChildPath "conf.d"
-  if (-not (Test-Path `
-        -Path $confDir `
-        -PathType Container)) {
-    New-Item `
-      -Path $confDir `
-      -ItemType Directory | Out-Null
+  # -------------------------
+  # FASTCGI CONFIG
+  # -------------------------
+  Write-Host "${GREEN}Configuring FastCGI...${NC}"
+
+  $confDir = Join-Path $phpInstallationPath "conf.d"
+  if (-not (Test-Path $confDir)) {
+    New-Item -ItemType Directory -Path $confDir | Out-Null
   }
+
   $targetIni = Join-Path $confDir "99-$siteUrl.ini"
-  Copy-Item -Path $iniSourcePath -Destination $targetIni -Force
-  $fullPath = Join-Path `
-    -Path $phpInstallationPath `
-    -ChildPath "php-cgi.exe"
+  Copy-Item $iniSourcePath $targetIni -Force
+
+  $phpCgi = Join-Path $phpInstallationPath "php-cgi.exe"
+
   $config = $server.GetApplicationHostConfiguration()
   $fastCgiSection = $config.GetSection("system.webServer/fastCgi")
   $fastCgiCollection = $fastCgiSection.GetCollection()
-  if ($null -ne $fastCgiCollection) {
-    foreach ($applicationElement in $fastCgiCollection) {
-      if ($applicationElement["fullPath"] -eq $fullPath -and $applicationElement["arguments"] -eq "") {
-        $fastCgiCollection.Remove($applicationElement)
-        break
-      }
-    }
+
+  # Remove existing matching FastCGI entry
+  $existing = $fastCgiCollection |
+  Where-Object { $_["fullPath"] -eq $phpCgi -and $_["arguments"] -eq "" }
+
+  foreach ($entry in $existing) {
+    $fastCgiCollection.Remove($entry)
   }
-  $applicationElement = $fastCgiCollection.CreateElement("application")
-  $applicationElement["fullPath"] = $fullPath
-  $applicationElement["instanceMaxRequests"] = 10000
-  $environmentVariablesCollection = $applicationElement.GetCollection("environmentVariables")
-  $environmentVariableElement = $environmentVariablesCollection.CreateElement("environmentVariable")
-  $environmentVariableElement["name"] = "PHP_FCGI_MAX_REQUESTS"
-  $environmentVariableElement["value"] = "10000"
-  $environmentVariablesCollection.Add($environmentVariableElement) | Out-Null
-  $environmentVariableElement = $environmentVariablesCollection.CreateElement("environmentVariable")
-  $environmentVariableElement["name"] = "PHPRC"
-  $environmentVariableElement["value"] = Join-Path $phpInstallationPath "php.ini"
-  $envVar = $environmentVariablesCollection.CreateElement("environmentVariable")
-  $envVar["name"] = "PHP_INI_SCAN_DIR"
-  $envVar["value"] = $confDir
-  $environmentVariablesCollection.Add($envVar) | Out-Null
-  $environmentVariablesCollection.Add($environmentVariableElement) | Out-Null
-  $fastCgiCollection.Add($applicationElement) | Out-Null
+
+  # Add new FastCGI entry
+  $app = $fastCgiCollection.CreateElement("application")
+  $app["fullPath"] = $phpCgi
+  $app["instanceMaxRequests"] = 10000
+
+  $env = $app.GetCollection("environmentVariables")
+
+  $vars = @{
+    "PHP_FCGI_MAX_REQUESTS" = "10000"
+    "PHPRC"                 = Join-Path $phpInstallationPath "php.ini"
+    "PHP_INI_SCAN_DIR"      = $confDir
+  }
+
+  foreach ($k in $vars.Keys) {
+    $ev = $env.CreateElement("environmentVariable")
+    $ev["name"] = $k
+    $ev["value"] = $vars[$k]
+    $env.Add($ev) | Out-Null
+  }
+
+  $fastCgiCollection.Add($app) | Out-Null
   $server.CommitChanges()
 
-  Write-Host "${GREEN}Setting up local DNS...${NC}"
-  $hostsFilePath = Join-Path `
-    -Path $env:WinDir `
-    -ChildPath "system32\Drivers\etc\hosts"
-  $hosts = Get-Content -Path $hostsFilePath
-  $entryExists = $hosts -match "$([Regex]::Escape("127.0.0.1"))\s+$([Regex]::Escape($siteUrl))"
-  if (-not $entryExists) {
-    Add-Content `
-      -Path $hostsFilePath `
-      -Encoding UTF8 `
-      -Value "`r`n`t127.0.0.1`t$siteUrl"
+  # -------------------------
+  # HOSTS FILE
+  # -------------------------
+  Write-Host "${GREEN}Updating hosts file...${NC}"
+
+  $hostsFile = Join-Path $env:WinDir "System32\drivers\etc\hosts"
+  $hosts = Get-Content $hostsFile
+
+  if (-not ($hosts -match "127\.0\.0\.1\s+$siteUrl")) {
+    Add-Content -Path $hostsFile -Encoding UTF8 -Value "`r`n127.0.0.1`t$siteUrl"
   }
-  & ipconfig /flushdns | Out-Null
+
+  ipconfig /flushdns | Out-Null
 }
+
 end {
-  Write-Host "${GREEN}Setup completed. You can access the site at https://$siteUrl${NC}"
+  Write-Host "${GREEN}Setup complete. Access your site at: https://$siteUrl${NC}"
 }
