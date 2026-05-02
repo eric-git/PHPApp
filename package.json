@@ -10,7 +10,9 @@
   "type": "module",
   "scripts": {
     "spell-check": "npx cspell **/*",
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "deploy-local-sh": "sh ./setup-local-debian.sh",
+    "deploy-local-pwsh": "pwsh ./setup-local-windows.ps1"
   },
   "devDependencies": {
     "@cspell/dict-filetypes": "3.0.18",
