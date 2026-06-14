@@ -8,6 +8,8 @@
     "mads-hartmann.bash-ide-vscode",
     "dotjoshjohnson.xml",
     "pkief.material-icon-theme",
-    "editorconfig.editorconfig"
+    "editorconfig.editorconfig",
+    "mermaidchart.vscode-mermaid-chart",
+    "bierner.markdown-mermaid"
   ]
 }

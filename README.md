@@ -63,6 +63,18 @@ sudo ./deployment/setup-local-debian.sh "path/to/src"
 
 ---
 
+## 🔀 Sequence Diagram
+
+```mermaid
+sequenceDiagram
+  participant Client
+  participant ATO
+  participant USI
+  Client->>ATO: Request a SAML token
+  ATO->>Client: Issue a SAML token
+  Client->>USI: Request with the issued SAML token
+```
+
 ## 🧪 Testing Accounts
 
 Two test accounts are available:
