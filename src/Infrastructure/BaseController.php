@@ -12,19 +12,22 @@ use XSLTProcessor;
 use Usi\Configuration\Configuration;
 use Usi\Configuration\ConfigurationManager;
 use Usi\Configuration\OrgKeyData;
+use Usi\Configuration\UsiVersion;
 
 abstract class BaseController
 {
   protected readonly Configuration $Configuration;
   protected readonly OrgKeyData $OrgKeyData;
+  protected readonly UsiVersion $VersionData;
 
   protected function __construct()
   {
     $this->Configuration = ConfigurationManager::getConfiguration($_SESSION["ENVIRONMENT"]);
     $this->OrgKeyData = $this->Configuration->getOrgKeyData($_SESSION["ORGCODE"]);
+    $this->VersionData = $this->Configuration->getUsiVersion($_SESSION["VERSION"]);
   }
 
-  protected static function cleanXml($xml): string
+  protected static function cleanXml(string $xml): string
   {
     $domDocument = new DOMDocument();
     $domDocument->load(sprintf("%s/assets/templates/xml-cleanup.xslt", $_SERVER["DOCUMENT_ROOT"]));

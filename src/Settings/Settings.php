@@ -1,5 +1,7 @@
 <?php
 
+/** @var \Usi\Models\SettingsViewModel $settingsViewModel */
+
 declare(strict_types=1);
 
 namespace Usi\Views;
@@ -36,6 +38,7 @@ namespace Usi\Views;
               <dl>
                 <dt class="box">
                   Current Environment: <em id="txtCurrentEnvironment"><?= $settingsViewModel->CurrentEnvironment ?></em>;
+                  Current Version: <em id="txtCurrentVersion"><?= $settingsViewModel->CurrentVersion ?></em>;
                   Current Org Code: <em id="txtCurrentOrgCode"><?= $settingsViewModel->CurrentOrgCode ?></em>
                 </dt>
                 <dd>
@@ -53,6 +56,18 @@ namespace Usi\Views;
                         $selected = strcasecmp($settingsViewModel->CurrentEnvironment, $configuration->Environment) === 0; ?>
                         <option value="<?= $configuration->Environment ?>" <?= $selected ? "selected" : "" ?> data-current="<?= $selected ? "true" : "false" ?>">
                           <?= $configuration->Environment ?>
+                        </option>
+                      <?php } ?>
+                    </select>
+                    <span class="col-6"></span>
+                  </dt>
+                  <dt>
+                    <h3 class="col-3">Version</h3>
+                    <select id="cbEnvironment" class="col-3" name="param_0">
+                      <?php foreach ($settingsViewModel->ConfigurationCollection as $configuration) {
+                        $selected = strcasecmp($settingsViewModel->CurrentVersion, $configuration->DefaultVersion) === 0; ?>
+                        <option value="<?= $configuration->DefaultVersion ?>" <?= $selected ? "selected" : "" ?> data-current="<?= $selected ? "true" : "false" ?>">
+                          <?= $configuration->DefaultVersion ?>
                         </option>
                       <?php } ?>
                     </select>

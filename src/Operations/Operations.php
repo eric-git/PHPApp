@@ -1,4 +1,5 @@
 <?php
+/** @var \Usi\Models\OperationsViewModel $operationsViewModel */
 
 declare(strict_types=1);
 

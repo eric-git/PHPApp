@@ -23,16 +23,17 @@ class SettingsController extends BaseController
     require_once(sprintf("%s/Settings/Settings.php", $_SERVER["DOCUMENT_ROOT"]));
   }
 
-  public function update(string $environment, string $orgCode): array
+  public function update(string $environment, string $orgCode, string $version): array
   {
     $_SESSION["ENVIRONMENT"] = $environment;
     $_SESSION["ORGCODE"] = $orgCode;
-    return ["Environment" => $environment, "OrgCode" => $orgCode];
+    $_SESSION["VERSION"] = $version;
+    return ["Environment" => $environment, "OrgCode" => $orgCode, "Version" => $version];
   }
 
   private function populateViewModel(): SettingsViewModel
   {
-    $settingsViewModel = new SettingsViewModel($this->Configuration->Environment, $this->OrgKeyData->Code, ConfigurationManager::$Configurations);
+    $settingsViewModel = new SettingsViewModel($this->Configuration->Environment, $this->OrgKeyData->Code, $this->Configuration->Usi->Versions[0]->Name, ConfigurationManager::$Configurations);
     return $settingsViewModel;
   }
 }

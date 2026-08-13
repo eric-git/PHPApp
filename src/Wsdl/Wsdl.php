@@ -1,4 +1,5 @@
 <?php
+/** @var \Usi\Models\WsdlViewModel $wsdlViewModel */
 
 declare(strict_types=1);
 

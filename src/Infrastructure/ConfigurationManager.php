@@ -54,8 +54,10 @@ class ConfigurationManager
       $environment,
       $environmentDomXPath->evaluate("string(@url)", $environmentElement),
       $environmentDomXPath->evaluate("string(@defaultOrgCode)", $environmentElement),
+      $environmentDomXPath->evaluate("string(@defaultVersion)", $environmentElement),
       self::getStsSettings($environmentDomXPath),
-      self::getKeyStore($keyStoreDomXPath, $environmentDomXPath)
+      self::getKeyStore($keyStoreDomXPath, $environmentDomXPath),
+      self::getUsiSettings($environmentDomXPath),
     );
 
     return $configuration;
@@ -121,6 +123,23 @@ class ConfigurationManager
     $keyStoreDomXPath->registerNamespace("ato", "http://auth.abr.gov.au/credential/xsd/SBRCredentialStore");
 
     return [$environmentDomXPath, $keyStoreDomXPath];
+  }
+
+  private static function getUsiSettings(DomXPath $environmentDomXPath): UsiSettings
+  {
+    $usiVersions = new UsiVersionCollection();
+    $counter = 0;
+    $elements = $environmentDomXPath->query("//usi:environment/usi:usi/usi:version");
+    foreach ($elements as $element) {
+      $usiVersion = new UsiVersion(
+        $environmentDomXPath->evaluate("string(@name)", $element),
+        $environmentDomXPath->evaluate("string(@url)", $element)
+      );
+      $usiVersions[$counter] = $usiVersion;
+      $counter++;
+    }
+
+    return new UsiSettings($usiVersions);
   }
 }
 
@@ -210,20 +229,91 @@ class OrgKeyDataCollection implements ArrayAccess, IteratorAggregate, Countable
   }
 }
 
+class UsiSettings
+{
+  public readonly UsiVersionCollection $Versions;
+
+  public function __construct(UsiVersionCollection $versions)
+  {
+    $this->Versions = $versions;
+  }
+}
+
+class UsiVersion
+{
+  public readonly string $Name;
+  public readonly string $Url;
+
+  public function __construct(string $name, string $url)
+  {
+    $this->Name = $name;
+    $this->Url = $url;
+  }
+}
+
+class UsiVersionCollection implements ArrayAccess, IteratorAggregate, Countable
+{
+
+  private array $usiVersions;
+
+  public function __construct(UsiVersion ...$usiVersions)
+  {
+    $this->usiVersions = $usiVersions;
+  }
+
+  public function offsetExists(mixed $offset): bool
+  {
+    return isset($this->usiVersions[$offset]);
+  }
+
+  public function offsetGet(mixed $offset): mixed
+  {
+    return $this->usiVersions[$offset];
+  }
+
+  public function offsetSet(mixed $offset, mixed $value): void
+  {
+    if ($value instanceof UsiVersion) {
+      $this->usiVersions[$offset] = $value;
+    } else {
+      throw new TypeError("Not a UsiVersion object.");
+    }
+  }
+
+  public function offsetUnset(mixed $offset): void
+  {
+    unset($this->usiVersions[$offset]);
+  }
+
+  public function getIterator(): Traversable
+  {
+    return new ArrayIterator($this->usiVersions);
+  }
+
+  public function count(): int
+  {
+    return count($this->usiVersions);
+  }
+}
+
 class Configuration
 {
   public readonly string $Environment;
+  public readonly UsiSettings $Usi;
   public readonly StsSettings $Sts;
   public readonly string $UsiServiceUrl;
   public readonly string $DefaultOrgCode;
+  public readonly string $DefaultVersion;
   public readonly KeyStore $KeyStore;
 
-  public function __construct(string $environment, string $usiServiceUrl, string $defaultOrgCode, StsSettings $sts, KeyStore $keyStore)
+  public function __construct(string $environment, string $usiServiceUrl, string $defaultOrgCode, string $defaultVersion, StsSettings $sts, KeyStore $keyStore, UsiSettings $usi)
   {
     $this->Environment = $environment;
     $this->Sts = $sts;
+    $this->Usi = $usi;
     $this->UsiServiceUrl = $usiServiceUrl;
     $this->DefaultOrgCode = $defaultOrgCode;
+    $this->DefaultVersion = $defaultVersion;
     $this->KeyStore = $keyStore;
   }
 
@@ -235,6 +325,16 @@ class Configuration
       }
     }
     throw new \Exception("OrgKeyData for orgCode '{$orgCode}' not found.");
+  }
+
+  public function getUsiVersion(string $versionName): UsiVersion
+  {
+    foreach ($this->Usi->Versions as $version) {
+      if (strcasecmp($version->Name, $versionName) === 0) {
+        return $version;
+      }
+    }
+    throw new \Exception("UsiVersion for versionName '{$versionName}' not found.");
   }
 }
 

@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<environment xmlns="http://usi.gov.au/ws" url="https://3pt.portal.usi.gov.au/service/v5/usiservice.svc" defaultOrgCode="VA1803">
+<environment xmlns="http://usi.gov.au/ws" url="https://3pt.portal.usi.gov.au/service/v5/usiservice.svc" defaultOrgCode="VA1803" defaultVersion="V5">
   <sts url="https://softwareauthorisations.evte.ato.gov.au/R3.0/S007v1.3/service.svc" uri="https://3pt.portal.usi.gov.au/service/v5/usiservice.svc">
     <keyStoreMapping>
       <add abn="11000002568" code="VA1802" privateKeyPassword="Password1!" secondPartyAbn="96312011219"/>
       <add abn="27809366375" code="VA1803" privateKeyPassword="Password1!"/>
     </keyStoreMapping>
   </sts>
+  <usi>
+    <version name="V6" url="https://3pt.portal.usi.gov.au/service/v6/usiservice.svc"/>
+    <version name="V5" url="https://3pt.portal.usi.gov.au/service/v5/usiservice.svc"/>
+  </usi>
 </environment>

@@ -13,12 +13,14 @@ class SettingsViewModel extends BaseViewModel
 {
   public readonly string $CurrentEnvironment;
   public readonly string $CurrentOrgCode;
+  public readonly string $CurrentVersion;
   public readonly ConfigurationCollection $ConfigurationCollection;
 
-  public function __construct(string $currentEnvironment, string $currentOrgCode, ConfigurationCollection $configurationCollection)
+  public function __construct(string $currentEnvironment, string $currentOrgCode, string $currentVersion, ConfigurationCollection $configurationCollection)
   {
     $this->CurrentEnvironment = $currentEnvironment;
     $this->CurrentOrgCode = $currentOrgCode;
+    $this->CurrentVersion = $currentVersion;
     $this->ConfigurationCollection = $configurationCollection;
   }
 }

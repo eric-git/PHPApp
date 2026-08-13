@@ -1,4 +1,5 @@
 <?php
+/** @var \Usi\Models\SectionCollection $sections */
 
 declare(strict_types=1);
 

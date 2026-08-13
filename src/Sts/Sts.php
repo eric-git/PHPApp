@@ -1,4 +1,5 @@
 <?php
+/** @var \Usi\Models\StsViewModel $stsViewModel */
 
 declare(strict_types=1);
 

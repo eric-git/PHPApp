@@ -13,7 +13,7 @@
     <a:ReplyTo>
       <a:Address>http://www.w3.org/2005/08/addressing/anonymous</a:Address>
     </a:ReplyTo>
-    <a:To s:mustUnderstand="1">https://3pt.portal.usi.gov.au/Service/v5/UsiService.svc</a:To>
+    <a:To s:mustUnderstand="1"/>
     <o:Security s:mustUnderstand="1">
       <u:Timestamp u:Id="_0">
         <u:Created/>
